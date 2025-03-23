@@ -1,4 +1,4 @@
-package br.com.controlapi.Controller;
+package br.com.controlapi.controller;
 
 import br.com.controlapi.model.Users;
 import br.com.controlapi.repository.UsersRepository;

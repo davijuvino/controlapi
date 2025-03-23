@@ -1,5 +1,36 @@
 > Projeto API Controle Despesas
 
+> Endpoints
+  - /users
+  ````
+      {
+         "name":"João da Silva",
+         "email":"joao.silva@example.com",
+         "password":"senhaSegura123",
+         "createAt":"2025-03-23T13:42:00",
+         "deleteAt":null,
+         "updateAt":null,
+         "expenses":[
+            {
+               "name":"João da Silva",
+               "category":"joao.silva@example.com",
+               "description":"senhaSegura123",
+               "createAt":"2025-03-23T13:42:00",
+               "deleteAt":null,
+               "updateAt":null
+            },
+            {
+               "name":"João da Silva",
+               "category":"joao.silva@example.com",
+               "description":"senhaSegura123",
+               "createAt":"2025-03-23T13:42:00",
+               "deleteAt":null,
+               "updateAt":null
+            }
+         ]
+      }
+  ````
+      
 >Referencias: 
       https://dco-unesp-bauru.github.io/tcc-bcc-2020-2/ThiagoHV/presentation-ThiagoHV.pdf
 >Reference relaciation
@@ -50,4 +81,9 @@ By following these practices, you’ll create entities that are well-structured,
 ### 11. **CrossOrigin**
 - O que é @CrossOriginA anotação no Spring Boot oferece aos desenvolvedores uma maneira rápida e fácil de gerenciar solicitações de origem cruzada. Embora a política do CORS seja crucial para a segurança, os aplicativos modernos geralmente exigem algum nível de compartilhamento entre origens. Com o Spring Boot, os desenvolvedores podem equilibrar facilmente as necessidades de segurança com a funcionalidade.
 - https://medium.com/@dev_RV/what-is-crossorigin-annotation-in-spring-boot-its-purpose-66125e1fc21a
+
+
+
+### 12. **@Nullable** 
+- Annotation to indicate that a specific parameter, return value, or field can be null . @NonNull : Annotation to indicate that a specific parameter, return value, or field cannot be null (not needed on parameters, return values, and fields where @NonNullApi and @NonNullFields apply, respectively).
 

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 @ToString
 @AllArgsConstructor
@@ -23,19 +24,16 @@ public class Expenses {
     private String name;
     private String category;
     private String description;
-
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createAt;
-
     @Column(name = "delete_at")
     private LocalDateTime deleteAt;
-
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Product> products;
+//    @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonManagedReference
+//    private List<Product> products = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
