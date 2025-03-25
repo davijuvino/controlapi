@@ -1,7 +1,7 @@
 > Projeto API Controle Despesas
 
 > Endpoints
-  - /users
+  - /users - usuarios associados ha uma despesa ou não associados
   ````
       {
          "name":"João da Silva",

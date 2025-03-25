@@ -2,21 +2,19 @@ package br.com.controlapi.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-@ToString
+
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@EqualsAndHashCode(exclude = {"expenses"}) //Para trabalhar com usuarios associados, devemos excluir hashcode
+@Data
 @Entity
 @Table(name = "users")
 public class Users {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,6 +29,6 @@ public class Users {
     private LocalDateTime updateAt;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Expenses> expenses;
+    private List<Expenses> expenses = new ArrayList<>();
 }
 
