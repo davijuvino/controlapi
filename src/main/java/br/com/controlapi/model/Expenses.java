@@ -33,7 +33,7 @@ public class Expenses {
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     @JsonProperty("user_id")
-    private Users user;
+    private User user;
 
     @OneToMany(mappedBy = "expenses", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

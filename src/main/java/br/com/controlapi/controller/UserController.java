@@ -1,47 +1,50 @@
 package br.com.controlapi.controller;
 
-import br.com.controlapi.model.Users;
-import br.com.controlapi.dto.UserDTO;
-import br.com.controlapi.repository.UsersRepository;
+import br.com.controlapi.dto.UserDto;
+import br.com.controlapi.repository.UserRepository;
+import br.com.controlapi.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
+    @Autowired
+    private UserServices userServices;
 
-    /**
-     * List of users
-     *
-     * @return ResponseEntity
-     */
-    @GetMapping
-    public List<UserDTO> getAllUsers() {
-        return usersRepository.findAll().stream()
-                .map(UserDTO::new)
-                .collect(Collectors.toList());
+    @GetMapping("/users")
+    public List<UserDto> getAllUsers() {
+        return userServices.getAllUsers();
     }
 
 
-    /**
-     * Create a new user
-     *
-     * @param users
-     * @return ResponseEntity
-     */
-    @PostMapping
-    public ResponseEntity<Users> create(@RequestBody Users users) {
-        return new ResponseEntity<>(usersRepository.save(users),
-                HttpStatus.CREATED);
+    @GetMapping("/users/{userId}")
+    public UserDto getUserById(@PathVariable Long userId) {
+        return userServices.getUserById(userId);
+    }
 
+
+    @PostMapping("/users")
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+        return new ResponseEntity<>(userServices.createUser(userDto), HttpStatus.CREATED);
+    }
+
+
+    @PutMapping("/users/{userId}")
+    public UserDto updateUser(@PathVariable Long userId, @RequestBody UserDto userDto){
+        return userServices.updateUser(userId, userDto);
+    }
+
+
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
+        return new ResponseEntity<>(userServices.deleteUser(userId), HttpStatus.OK);
     }
 }

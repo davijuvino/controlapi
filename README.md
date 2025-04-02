@@ -1,7 +1,7 @@
 > Projeto API Controle Despesas
 
 > Endpoints
-  - /users - usuarios associados ha uma despesa ou não associados
+  - /user - usuarios associados ha uma despesa ou não associados
   ````
       {
          "name":"João da Silva",
@@ -86,4 +86,10 @@ By following these practices, you’ll create entities that are well-structured,
 
 ### 12. **@Nullable** 
 - Annotation to indicate that a specific parameter, return value, or field can be null . @NonNull : Annotation to indicate that a specific parameter, return value, or field cannot be null (not needed on parameters, return values, and fields where @NonNullApi and @NonNullFields apply, respectively).
+
+
+### 13. **DTOs**
+- DTOs (Data Transfer Objects) are simple objects that should not contain any business logic but only fields and getters/setters. They are used to transfer data between different layers of an application, such as between the controller and service layers.
+- exemplo:
+- https://www.javaguides.net/2022/12/spring-boot-dto-example-tutorial.html
 

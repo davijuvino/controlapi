@@ -2,10 +2,8 @@ package br.com.controlapi.controller;
 
 import br.com.controlapi.model.Expenses;
 import br.com.controlapi.repository.ExpensesRepository;
-import br.com.controlapi.repository.UsersRepository;
+import br.com.controlapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,7 +14,7 @@ public class ExpensesController {
     private ExpensesRepository expensesRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     /**
      * Create a new expenses
@@ -27,7 +25,7 @@ public class ExpensesController {
     @PostMapping("/{userId}")
     public Expenses create(@PathVariable (value = "userId") Long userId,
                                            @RequestBody Expenses expenses) {
-        return usersRepository.findById(userId).map(users -> {
+        return userRepository.findById(userId).map(users -> {
             expenses.setUser(users);
             return expensesRepository.save(expenses);
         }).orElseThrow(() -> new IllegalStateException("not found"));
