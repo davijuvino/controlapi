@@ -1,5 +1,6 @@
 package br.com.controlapi.services;
 
+import br.com.controlapi.constants.Messages;
 import br.com.controlapi.dto.UserDto;
 import br.com.controlapi.exception.ResourceNotFoundException;
 import br.com.controlapi.exception.UserCreationException;
@@ -32,15 +33,15 @@ public class UserServices {
         getLogger().info("Iniciando a criação do usuário com email: {}", userDTO.getEmail());
         try {
             if (userRepository.existsByEmail(userDTO.getEmail())) {
-                throw new UserCreationException("Usuário com email " + userDTO.getEmail() + " já existe.");
+                throw new UserCreationException(String.format(Messages.USER_ALREADY_EXISTS, userDTO.getEmail()));
             }
             User user = new User(userDTO);
             User savedUser = userRepository.save(user);
-            getLogger().info("Usuário criado com sucesso com ID: {}", savedUser.getId());
+            getLogger().info(String.format(Messages.USER_CREATION_SUCCESS, savedUser.getId()));
             return new UserDto(savedUser);
         } catch (Exception e) {
-            getLogger().error("Erro inesperado ao criar usuário: {}", e.getMessage());
-            throw new UserCreationException("Erro inesperado ao criar usuário: " + e.getMessage());
+            getLogger().error(String.format(Messages.USER_CREATION_ERROR, e.getMessage()));
+            throw new UserCreationException(String.format(Messages.USER_CREATION_ERROR, e.getMessage()));
         }
     }
 
@@ -52,7 +53,7 @@ public class UserServices {
 
     public UserDto getUserById(Long userId) {
         return userRepository.findById(userId).map(UserDto::new)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com userId " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(Messages.USER_NOT_FOUND, userId)));
     }
 
     public UserDto updateUser(Long userId, UserDto userDto) {
@@ -60,20 +61,20 @@ public class UserServices {
             try {
                 BeanUtils.copyProperties(userDto, user, "id", "createAt", "deleteAt", "updateAt");
                 user.setUpdateAt(LocalDateTime.now());
-                getLogger().info("Usuário atualizado com sucesso com ID: {}", user.getId());
+                getLogger().info(String.format(Messages.USER_UPDATE_SUCCESS, user.getId()));
                 return new UserDto(userRepository.save(user));
             } catch (Exception e) {
-                getLogger().error("Erro inesperado ao atualizar usuário: {}", e.getMessage());
-                throw new UserCreationException("Erro inesperado ao atualizar usuário: " + e.getMessage());
+                getLogger().error(String.format(Messages.USER_UPDATE_ERROR, e.getMessage()));
+                throw new UserCreationException(String.format(Messages.USER_UPDATE_ERROR, e.getMessage()));
             }
 
-        }).orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com userId " + userId));
+        }).orElseThrow(() -> new ResourceNotFoundException(String.format(Messages.USER_NOT_FOUND, userId)));
     }
 
     public String deleteUser(Long userId) {
         return userRepository.findById(userId).map(user -> {
             userRepository.deleteById(userId);
-            return "Usuário excluído com sucesso!";
-        }).orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com userId" + userId));
+            return Messages.USER_DELETION_SUCCESS;
+        }).orElseThrow(() -> new ResourceNotFoundException(String.format(Messages.USER_NOT_FOUND, userId)));
     }
 }
