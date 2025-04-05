@@ -93,3 +93,17 @@ By following these practices, you’ll create entities that are well-structured,
 - exemplo:
 - https://www.javaguides.net/2022/12/spring-boot-dto-example-tutorial.html
 
+### 14. **@CacheSpring**
+- Spring Cache is a powerful abstraction that allows developers to cache data in a variety of ways, improving application performance and reducing the load on backend systems. It provides a consistent API for caching, regardless of the underlying caching technology used (e.g., Ehcache, Hazelcast, Redis, etc.). By using Spring Cache, developers can easily annotate methods to cache their results, manage cache entries, and configure cache settings without having to deal with the complexities of the underlying caching implementation.
+- https://www.baeldung.com/spring-cache-tutorial
+- https://www.baeldung.com/spring-cache
+- https://www.baeldung.com/spring-cache-annotations
+- https://www.baeldung.com/spring-cache-ehcache
+- exemplo:  https://dev.to/noelopez/spring-cache-speed-up-your-app-1gf6
+```java 
+   - @Cacheable("users")
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+
