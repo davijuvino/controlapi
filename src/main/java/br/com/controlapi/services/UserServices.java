@@ -23,20 +23,23 @@ public class UserServices {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServices.class);
     private UserRepository userRepository;
+    protected Logger getLogger() {
+        return logger;
+    }
 
     @Transactional
     public UserDto createUser(@Valid UserDto userDTO) {
-        logger.info("Iniciando a criação do usuário com email: {}", userDTO.getEmail());
+        getLogger().info("Iniciando a criação do usuário com email: {}", userDTO.getEmail());
         try {
             if (userRepository.existsByEmail(userDTO.getEmail())) {
                 throw new UserCreationException("Usuário com email " + userDTO.getEmail() + " já existe.");
             }
             User user = new User(userDTO);
             User savedUser = userRepository.save(user);
-            logger.info("Usuário criado com sucesso com ID: {}", savedUser.getId());
+            getLogger().info("Usuário criado com sucesso com ID: {}", savedUser.getId());
             return new UserDto(savedUser);
         } catch (Exception e) {
-            logger.error("Erro inesperado ao criar usuário: {}", e.getMessage());
+            getLogger().error("Erro inesperado ao criar usuário: {}", e.getMessage());
             throw new UserCreationException("Erro inesperado ao criar usuário: " + e.getMessage());
         }
     }
@@ -57,10 +60,10 @@ public class UserServices {
             try {
                 BeanUtils.copyProperties(userDto, user, "id", "createAt", "deleteAt", "updateAt");
                 user.setUpdateAt(LocalDateTime.now());
-                logger.info("Usuário atualizado com sucesso com ID: {}", user.getId());
+                getLogger().info("Usuário atualizado com sucesso com ID: {}", user.getId());
                 return new UserDto(userRepository.save(user));
             } catch (Exception e) {
-                logger.error("Erro inesperado ao atualizar usuário: {}", e.getMessage());
+                getLogger().error("Erro inesperado ao atualizar usuário: {}", e.getMessage());
                 throw new UserCreationException("Erro inesperado ao atualizar usuário: " + e.getMessage());
             }
 
