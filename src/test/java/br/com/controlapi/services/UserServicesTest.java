@@ -1,5 +1,6 @@
 package br.com.controlapi.services;
 
+import br.com.controlapi.constants.Messages;
 import br.com.controlapi.dto.UserDto;
 import br.com.controlapi.exception.ResourceNotFoundException;
 import br.com.controlapi.exception.UserCreationException;
@@ -13,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -133,24 +135,145 @@ public class UserServicesTest {
     }
 
     @Test
-    void updateUser_ShouldLogAppropriateMessages() {
+    void updateUser_WithMinimalData_SuccessfullyUpdatesUser() {
         Long userId = 1L;
         UserDto userDto = new UserDto();
-        userDto.setEmail("updated@example.com");
+        userDto.setName("New Name");
+
+        User existingUser = new User();
+        existingUser.setId(userId);
+        existingUser.setEmail("existing@example.com");
+        existingUser.setCreateAt(LocalDateTime.now().minusDays(1));
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserDto result = userServices.updateUser(userId, userDto);
+
+        assertNotNull(result);
+        assertEquals("New Name", result.getName());
+        assertEquals("existing@example.com", result.getEmail());
+        assertNotNull(result.getUpdateAt());
+        assertTrue(result.getUpdateAt().isAfter(existingUser.getCreateAt()));
+
+        verify(userRepository).findById(userId);
+        verify(userRepository).save(any(User.class));
+        verify(logger).info(contains("Usuário atualizado com sucesso"));
+    }
+
+    @Test
+    void updateUser_LogsError_WhenExceptionOccurs() {
+        Long userId = 1L;
+        UserDto userDto = new UserDto();
         User existingUser = new User();
         existingUser.setId(userId);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
-        when(userRepository.save(any(User.class))).thenReturn(existingUser);
-
-        userServices.updateUser(userId, userDto);
-
-        verify(logger).info("Usuário atualizado com sucesso com ID: {}", userId);
-
-        doThrow(new RuntimeException("Simulated error")).when(userRepository).save(any(User.class));
+        when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Database error"));
 
         assertThrows(UserCreationException.class, () -> userServices.updateUser(userId, userDto));
-        verify(logger).error(eq("Erro inesperado ao atualizar usuário: {}"), anyString());
+
+        verify(logger).error(eq(String.format(Messages.USER_UPDATE_ERROR, "Database error")));
+        verify(userRepository).findById(userId);
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void updateUser_WithAllFields_SuccessfullyUpdatesUser() {
+        Long userId = 1L;
+        UserDto userDto = new UserDto();
+        userDto.setName("New Name");
+        userDto.setEmail("new@example.com");
+        userDto.setPassword("newPassword");
+
+        User existingUser = new User();
+        existingUser.setId(userId);
+        existingUser.setName("Old Name");
+        existingUser.setEmail("old@example.com");
+        existingUser.setPassword("oldPassword");
+        existingUser.setCreateAt(LocalDateTime.now().minusDays(1));
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserDto result = userServices.updateUser(userId, userDto);
+
+        assertNotNull(result);
+        assertEquals("New Name", result.getName());
+        assertEquals("new@example.com", result.getEmail());
+        assertEquals("newPassword", result.getPassword());
+        assertNotNull(result.getUpdateAt());
+        assertTrue(result.getUpdateAt().isAfter(existingUser.getCreateAt()));
+
+        verify(userRepository).findById(userId);
+        verify(userRepository).save(any(User.class));
+        verify(logger).info(contains("Usuário atualizado com sucesso"));
+    }
+
+    @Test
+    void updateUser_ReturnsAccurateUserDto() {
+        Long userId = 1L;
+        UserDto userDto = new UserDto();
+        userDto.setName("Updated Name");
+        userDto.setEmail("updated@example.com");
+
+        User existingUser = new User();
+        existingUser.setId(userId);
+        existingUser.setName("Original Name");
+        existingUser.setEmail("original@example.com");
+        existingUser.setCreateAt(LocalDateTime.now().minusDays(1));
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserDto result = userServices.updateUser(userId, userDto);
+
+        assertNotNull(result);
+        assertEquals(userId, result.getId());
+        assertEquals("Updated Name", result.getName());
+        assertEquals("updated@example.com", result.getEmail());
+        assertNotNull(result.getUpdateAt());
+        assertTrue(result.getUpdateAt().isAfter(existingUser.getCreateAt()));
+        assertEquals(existingUser.getCreateAt(), result.getCreateAt());
+
+        verify(userRepository).findById(userId);
+        verify(userRepository).save(any(User.class));
+        verify(logger).info(contains("Usuário atualizado com sucesso"));
+    }
+
+    @Test
+    void updateUser_ThrowsException_WhenInvalidDataProvided() {
+        Long userId = 1L;
+        UserDto userDto = new UserDto();
+        userDto.setEmail("invalid-email");  // Invalid email format
+
+        User existingUser = new User();
+        existingUser.setId(userId);
+        existingUser.setEmail("existing@example.com");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Invalid data"));
+
+        assertThrows(UserCreationException.class, () -> userServices.updateUser(userId, userDto));
+
+        verify(userRepository).findById(userId);
+        verify(userRepository).save(any(User.class));
+        verify(logger).error(contains(Messages.USER_UPDATE_ERROR));
+    }
+
+    @Test
+    void updateUser_ThrowsResourceNotFoundException_WithCorrectUserId() {
+        Long userId = 999L;
+        UserDto userDto = new UserDto();
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                () -> userServices.updateUser(userId, userDto));
+
+        String expectedMessage = String.format(Messages.USER_NOT_FOUND, userId);
+        assertEquals(expectedMessage, exception.getMessage());
+        verify(userRepository).findById(userId);
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test

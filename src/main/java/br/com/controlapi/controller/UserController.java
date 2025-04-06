@@ -1,7 +1,6 @@
 package br.com.controlapi.controller;
 
 import br.com.controlapi.dto.UserDto;
-import br.com.controlapi.repository.UserRepository;
 import br.com.controlapi.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,8 +12,6 @@ import java.util.List;
 @RestController
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserServices userServices;
