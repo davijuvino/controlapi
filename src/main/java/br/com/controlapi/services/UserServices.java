@@ -4,6 +4,7 @@ import br.com.controlapi.constants.Messages;
 import br.com.controlapi.dto.UserDto;
 import br.com.controlapi.exception.ResourceNotFoundException;
 import br.com.controlapi.exception.UserCreationException;
+import br.com.controlapi.exception.UserUpdateException;
 import br.com.controlapi.model.User;
 import br.com.controlapi.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -61,11 +62,12 @@ public class UserServices {
             try {
                 BeanUtils.copyProperties(userDto, user, "id", "createAt", "deleteAt", "updateAt");
                 user.setUpdateAt(LocalDateTime.now());
-                getLogger().info(String.format(Messages.USER_UPDATE_SUCCESS, user.getId()));
-                return new UserDto(userRepository.save(user));
+                User updatedUser = userRepository.save(user);
+                getLogger().info(String.format(Messages.USER_UPDATE_SUCCESS, userId));
+                return new UserDto(updatedUser);
             } catch (Exception e) {
                 getLogger().error(String.format(Messages.USER_UPDATE_ERROR, e.getMessage()));
-                throw new UserCreationException(String.format(Messages.USER_UPDATE_ERROR, e.getMessage()));
+                throw new UserUpdateException(String.format(Messages.USER_UPDATE_ERROR, e.getMessage()));
             }
 
         }).orElseThrow(() -> new ResourceNotFoundException(String.format(Messages.USER_NOT_FOUND, userId)));
