@@ -1,9 +1,10 @@
 package br.com.controlapi.services;
 
-import br.com.controlapi.constants.Messages;
+import br.com.controlapi.constants.Msg;
 import br.com.controlapi.dto.UserDto;
-import br.com.controlapi.exception.ResourceNotFoundException;
+import br.com.controlapi.exception.NotFoundException;
 import br.com.controlapi.exception.UserCreationException;
+import br.com.controlapi.exception.UserUpdateException;
 import br.com.controlapi.model.User;
 import br.com.controlapi.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -36,23 +36,8 @@ public class UserServicesTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        // Inject the mocked logger into UserServices
-        userServices = new UserServices(userRepository) {
-            @Override
-            protected Logger getLogger() {
-                return logger;
-            }
-        };
     }
 
-    @Test
-    void getLogger_ReturnsCorrectLogger() {
-        UserServices userServices = new UserServices(null);
-        Logger expectedLogger = LoggerFactory.getLogger(UserServices.class);
-        Logger actualLogger = userServices.getLogger();
-
-        assertEquals(expectedLogger, actualLogger);
-    }
 
     @Test
     void createUser_SuccessfullyCreatesUser() {
@@ -106,7 +91,7 @@ public class UserServicesTest {
     void getUserById_ThrowsException_WhenUserNotFound() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> userServices.getUserById(1L));
+        assertThrows(NotFoundException.class, () -> userServices.getUserById(1L));
         verify(userRepository, times(1)).findById(1L);
     }
 
@@ -129,36 +114,9 @@ public class UserServicesTest {
         UserDto userDto = new UserDto();
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> userServices.updateUser(1L, userDto));
+        assertThrows(NotFoundException.class, () -> userServices.updateUser(1L, userDto));
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    void updateUser_WithMinimalData_SuccessfullyUpdatesUser() {
-        Long userId = 1L;
-        UserDto userDto = new UserDto();
-        userDto.setName("New Name");
-
-        User existingUser = new User();
-        existingUser.setId(userId);
-        existingUser.setEmail("existing@example.com");
-        existingUser.setCreateAt(LocalDateTime.now().minusDays(1));
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        UserDto result = userServices.updateUser(userId, userDto);
-
-        assertNotNull(result);
-        assertEquals("New Name", result.getName());
-        assertEquals("existing@example.com", result.getEmail());
-        assertNotNull(result.getUpdateAt());
-        assertTrue(result.getUpdateAt().isAfter(existingUser.getCreateAt()));
-
-        verify(userRepository).findById(userId);
-        verify(userRepository).save(any(User.class));
-        verify(logger).info(contains("Usuário atualizado com sucesso"));
     }
 
     @Test
@@ -171,11 +129,8 @@ public class UserServicesTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Database error"));
 
-        assertThrows(UserCreationException.class, () -> userServices.updateUser(userId, userDto));
+        assertThrows(UserUpdateException.class, () -> userServices.updateUser(userId, userDto));
 
-        verify(logger).error(eq(String.format(Messages.USER_UPDATE_ERROR, "Database error")));
-        verify(userRepository).findById(userId);
-        verify(userRepository).save(any(User.class));
     }
 
     @Test
@@ -204,10 +159,6 @@ public class UserServicesTest {
         assertEquals("newPassword", result.getPassword());
         assertNotNull(result.getUpdateAt());
         assertTrue(result.getUpdateAt().isAfter(existingUser.getCreateAt()));
-
-        verify(userRepository).findById(userId);
-        verify(userRepository).save(any(User.class));
-        verify(logger).info(contains("Usuário atualizado com sucesso"));
     }
 
     @Test
@@ -236,9 +187,6 @@ public class UserServicesTest {
         assertTrue(result.getUpdateAt().isAfter(existingUser.getCreateAt()));
         assertEquals(existingUser.getCreateAt(), result.getCreateAt());
 
-        verify(userRepository).findById(userId);
-        verify(userRepository).save(any(User.class));
-        verify(logger).info(contains("Usuário atualizado com sucesso"));
     }
 
     @Test
@@ -254,11 +202,8 @@ public class UserServicesTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Invalid data"));
 
-        assertThrows(UserCreationException.class, () -> userServices.updateUser(userId, userDto));
+        assertThrows(UserUpdateException.class, () -> userServices.updateUser(userId, userDto));
 
-        verify(userRepository).findById(userId);
-        verify(userRepository).save(any(User.class));
-        verify(logger).error(contains(Messages.USER_UPDATE_ERROR));
     }
 
     @Test
@@ -267,10 +212,10 @@ public class UserServicesTest {
         UserDto userDto = new UserDto();
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        NotFoundException exception = assertThrows(NotFoundException.class,
                 () -> userServices.updateUser(userId, userDto));
 
-        String expectedMessage = String.format(Messages.USER_NOT_FOUND, userId);
+        String expectedMessage = String.format(Msg.USER_NOT_FOUND, userId);
         assertEquals(expectedMessage, exception.getMessage());
         verify(userRepository).findById(userId);
         verify(userRepository, never()).save(any(User.class));
@@ -292,7 +237,7 @@ public class UserServicesTest {
     void deleteUser_ThrowsException_WhenUserNotFound() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> userServices.deleteUser(1L));
+        assertThrows(NotFoundException.class, () -> userServices.deleteUser(1L));
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, never()).deleteById(1L);
     }

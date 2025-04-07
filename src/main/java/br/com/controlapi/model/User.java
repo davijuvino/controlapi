@@ -17,7 +17,6 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "users")
-@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id

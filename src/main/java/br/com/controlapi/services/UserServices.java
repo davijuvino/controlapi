@@ -1,8 +1,8 @@
 package br.com.controlapi.services;
 
-import br.com.controlapi.constants.Messages;
+import br.com.controlapi.constants.Msg;
 import br.com.controlapi.dto.UserDto;
-import br.com.controlapi.exception.ResourceNotFoundException;
+import br.com.controlapi.exception.NotFoundException;
 import br.com.controlapi.exception.UserCreationException;
 import br.com.controlapi.exception.UserUpdateException;
 import br.com.controlapi.model.User;
@@ -25,24 +25,21 @@ public class UserServices {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServices.class);
     private UserRepository userRepository;
-    protected Logger getLogger() {
-        return logger;
-    }
 
     @Transactional
     public UserDto createUser(@Valid UserDto userDTO) {
-        getLogger().info("Iniciando a criação do usuário com email: {}", userDTO.getEmail());
+        logger.info("Iniciando a criação do usuário com email: {}", userDTO.getEmail());
         try {
             if (userRepository.existsByEmail(userDTO.getEmail())) {
-                throw new UserCreationException(String.format(Messages.USER_ALREADY_EXISTS, userDTO.getEmail()));
+                throw new UserCreationException(String.format(Msg.USER_ALREADY_EXISTS, userDTO.getEmail()));
             }
             User user = new User(userDTO);
             User savedUser = userRepository.save(user);
-            getLogger().info(String.format(Messages.USER_CREATION_SUCCESS, savedUser.getId()));
+            logger.info(Msg.USER_CREATION_SUCCESS, savedUser.getId());
             return new UserDto(savedUser);
         } catch (Exception e) {
-            getLogger().error(String.format(Messages.USER_CREATION_ERROR, e.getMessage()));
-            throw new UserCreationException(String.format(Messages.USER_CREATION_ERROR, e.getMessage()));
+            logger.error(Msg.USER_CREATION_ERROR, e.getMessage());
+            throw new UserCreationException(String.format(Msg.USER_CREATION_ERROR, e.getMessage()));
         }
     }
 
@@ -54,7 +51,7 @@ public class UserServices {
 
     public UserDto getUserById(Long userId) {
         return userRepository.findById(userId).map(UserDto::new)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format(Messages.USER_NOT_FOUND, userId)));
+                .orElseThrow(() -> new NotFoundException(String.format(Msg.USER_NOT_FOUND, userId)));
     }
 
     public UserDto updateUser(Long userId, UserDto userDto) {
@@ -63,20 +60,20 @@ public class UserServices {
                 BeanUtils.copyProperties(userDto, user, "id", "createAt", "deleteAt", "updateAt");
                 user.setUpdateAt(LocalDateTime.now());
                 User updatedUser = userRepository.save(user);
-                getLogger().info(String.format(Messages.USER_UPDATE_SUCCESS, userId));
+                logger.info(Msg.USER_UPDATE_SUCCESS, userId);
                 return new UserDto(updatedUser);
             } catch (Exception e) {
-                getLogger().error(String.format(Messages.USER_UPDATE_ERROR, e.getMessage()));
-                throw new UserUpdateException(String.format(Messages.USER_UPDATE_ERROR, e.getMessage()));
+                logger.error(Msg.USER_UPDATE_ERROR, e.getMessage());
+                throw new UserUpdateException(String.format(Msg.USER_UPDATE_ERROR, e.getMessage()));
             }
 
-        }).orElseThrow(() -> new ResourceNotFoundException(String.format(Messages.USER_NOT_FOUND, userId)));
+        }).orElseThrow(() -> new NotFoundException(String.format(Msg.USER_NOT_FOUND, userId)));
     }
 
     public String deleteUser(Long userId) {
         return userRepository.findById(userId).map(user -> {
             userRepository.deleteById(userId);
-            return Messages.USER_DELETION_SUCCESS;
-        }).orElseThrow(() -> new ResourceNotFoundException(String.format(Messages.USER_NOT_FOUND, userId)));
+            return Msg.USER_DELETION_SUCCESS;
+        }).orElseThrow(() -> new NotFoundException(String.format(Msg.USER_NOT_FOUND, userId)));
     }
 }

@@ -1,13 +1,13 @@
 package br.com.controlapi.constants;
 
-public class Messages {
-    public static final String RESOURCE_NOT_FOUND = "Recurso não encontrado com resourceId %d";
-    public static final String RESOURCE_CREATION_ERROR = "Erro inesperado ao criar recurso: %s";
-    public static final String RESOURCE_UPDATE_ERROR = "Erro inesperado ao atualizar recurso: %s";
-    public static final String RESOURCE_DELETION_SUCCESS = "Recurso excluído com sucesso!";
-    public static final String RESOURCE_ALREADY_EXISTS = "Recurso com key %s já existe.";
-    public static final String RESOURCE_CREATION_SUCCESS = "Recurso criado com sucesso com ID: %d";
-    public static final String RESOURCE_UPDATE_SUCCESS = "Recurso atualizado com sucesso com ID: %d";
+public class Msg {
+    public static final String USER_RESOURCE_NOT_FOUND = "Recurso não encontrado com resourceId %d";
+    public static final String USER_RESOURCE_CREATION_ERROR = "Erro inesperado ao criar recurso: %s";
+    public static final String USER_RESOURCE_UPDATE_ERROR = "Erro inesperado ao atualizar recurso: %s";
+    public static final String USER_RESOURCE_DELETION_SUCCESS = "Recurso excluído com sucesso!";
+    public static final String USER_RESOURCE_ALREADY_EXISTS = "Recurso com key %s já existe.";
+    public static final String USER_RESOURCE_CREATION_SUCCESS = "Recurso criado com sucesso com ID: %d";
+    public static final String USER_RESOURCE_UPDATE_SUCCESS = "Recurso atualizado com sucesso com ID: %d";
 
 
     // Add users message constants as needed

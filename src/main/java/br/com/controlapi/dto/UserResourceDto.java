@@ -1,37 +1,30 @@
-package br.com.controlapi.model;
+package br.com.controlapi.dto;
 
-import br.com.controlapi.dto.ResourceDto;
-import jakarta.persistence.*;
+import br.com.controlapi.model.UserResource;
 import lombok.*;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Objects;
 
 @NoArgsConstructor
+//@EqualsAndHashCode(of = "id")
 @Getter
 @Setter
 @ToString
-@Entity
-@Table(name = "npl_resource")
-public class Resource {
+public class UserResourceDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
     private String key;
 
-    public Resource(ResourceDto resourceDto) {
-        BeanUtils.copyProperties(resourceDto,this);
+    public UserResourceDto(UserResource userResource) {
+        BeanUtils.copyProperties(userResource, this);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -40,7 +33,8 @@ public class Resource {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Resource other = (Resource) obj;
+        UserResourceDto other = (UserResourceDto) obj;
         return Objects.equals(id, other.id);
     }
+
 }

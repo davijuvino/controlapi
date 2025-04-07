@@ -1,24 +1,31 @@
-package br.com.controlapi.dto;
+package br.com.controlapi.model;
 
-import lombok.*;
+import br.com.controlapi.dto.UserResourceDto;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.beans.BeanUtils;
-import br.com.controlapi.model.Resource;
 
 import java.util.Objects;
 
 @NoArgsConstructor
-//@EqualsAndHashCode(of = "id")
 @Getter
 @Setter
 @ToString
-public class ResourceDto {
+@Entity
+@Table(name = "user_resource")
+public class UserResource {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String key;
 
-    public ResourceDto(Resource resource) {
-        BeanUtils.copyProperties(resource, this);
+    public UserResource(UserResourceDto userResourceDto) {
+        BeanUtils.copyProperties(userResourceDto, this);
     }
 
     @Override
@@ -33,8 +40,8 @@ public class ResourceDto {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        ResourceDto other = (ResourceDto) obj;
+        UserResource other = (UserResource) obj;
         return Objects.equals(id, other.id);
     }
-
+    
 }
