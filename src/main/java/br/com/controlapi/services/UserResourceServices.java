@@ -26,10 +26,10 @@ public class UserResourceServices {
 
     @Transactional
     public UserResourceDto createResource(@Valid UserResourceDto userResourceDTO) {
-        logger.info("Iniciando a criação do recurso com key: {}", userResourceDTO.getKey());
+        logger.info("Iniciando a criação do recurso com key: {}", userResourceDTO.getKeyId());
         try {
-            if (UserResourceRepository.existsByKey(userResourceDTO.getKey())) {
-                throw new UserResourceCreationException(String.format(Message.INFO_ALREADY_EXISTS, userResourceDTO.getKey()));
+            if (UserResourceRepository.existsByKeyId(userResourceDTO.getKeyId())) {
+                throw new UserResourceCreationException(String.format(Message.INFO_ALREADY_EXISTS, userResourceDTO.getKeyId()));
             }
             UserResource userResource = new UserResource(userResourceDTO);
             UserResource savedUserResource = UserResourceRepository.save(userResource);

@@ -15,7 +15,7 @@ public class UserResourceDto {
 
     private Long id;
     private String name;
-    private String key;
+    private String keyId;
 
     public UserResourceDto(UserResource userResource) {
         BeanUtils.copyProperties(userResource, this);

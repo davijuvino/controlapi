@@ -40,26 +40,26 @@ public class UserResourceServicesTest {
     @Test
     void createResource_SuccessfullyCreatesResource() {
         UserResourceDto userResourceDto = new UserResourceDto();
-        userResourceDto.setKey("testKey");
+        userResourceDto.setKeyId("testKey");
         UserResource userResource = new UserResource(userResourceDto);
-        when(UserResourceRepository.existsByKey(userResourceDto.getKey())).thenReturn(false);
+        when(UserResourceRepository.existsByKeyId(userResourceDto.getKeyId())).thenReturn(false);
         when(UserResourceRepository.save(any(UserResource.class))).thenReturn(userResource);
 
         UserResourceDto result = userResourceServices.createResource(userResourceDto);
 
-        assertEquals(userResourceDto.getKey(), result.getKey());
-        verify(UserResourceRepository, times(1)).existsByKey(userResourceDto.getKey());
+        assertEquals(userResourceDto.getKeyId(), result.getKeyId());
+        verify(UserResourceRepository, times(1)).existsByKeyId(userResourceDto.getKeyId());
         verify(UserResourceRepository, times(1)).save(any(UserResource.class));
     }
 
     @Test
     void createResource_ThrowsException_WhenKeyExists() {
         UserResourceDto userResourceDto = new UserResourceDto();
-        userResourceDto.setKey("testKey");
-        when(UserResourceRepository.existsByKey(userResourceDto.getKey())).thenReturn(true);
+        userResourceDto.setKeyId("testKey");
+        when(UserResourceRepository.existsByKeyId(userResourceDto.getKeyId())).thenReturn(true);
 
         assertThrows(UserResourceCreationException.class, () -> userResourceServices.createResource(userResourceDto));
-        verify(UserResourceRepository, times(1)).existsByKey(userResourceDto.getKey());
+        verify(UserResourceRepository, times(1)).existsByKeyId(userResourceDto.getKeyId());
         verify(UserResourceRepository, never()).save(any(UserResource.class));
     }
 
@@ -143,13 +143,13 @@ public class UserResourceServicesTest {
         // Arrange
         Long resourceId = 1L;
         UserResourceDto userResourceDto = new UserResourceDto();
-        userResourceDto.setKey("updatedKey");
+        userResourceDto.setKeyId("updatedKey");
         userResourceDto.setName("updatedValue");
 
 
         UserResource existingUserResource = new UserResource();
         existingUserResource.setId(resourceId);
-        existingUserResource.setKey("oldKey");
+        existingUserResource.setKeyId("oldKey");
         existingUserResource.setName("oldValue");
 
         when(UserResourceRepository.findById(resourceId)).thenReturn(Optional.of(existingUserResource));
@@ -161,7 +161,7 @@ public class UserResourceServicesTest {
         // Assert
         assertNotNull(result);
         assertEquals(resourceId, result.getId());
-        assertEquals(userResourceDto.getKey(), result.getKey());
+        assertEquals(userResourceDto.getKeyId(), result.getKeyId());
         assertEquals(userResourceDto.getName(), result.getName());
         verify(UserResourceRepository, times(1)).findById(resourceId);
         verify(UserResourceRepository, times(1)).save(any(UserResource.class));

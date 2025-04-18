@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface UserResourceRepository extends JpaRepository<UserResource, Long> {
 
-    Optional<UserResource> findByKey(String key);
+    Optional<UserResource> findByKeyId(String keyId);
 
     Optional<UserResource> findByName(String name);
 
-    boolean existsByKey(String key);
+    boolean existsByKeyId(String keyId);
 
     boolean existsByName(String name);
 }

@@ -22,7 +22,8 @@ public class UserResource {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String key;
+    @Column(name = "key_id")
+    private String keyId;
 
     public UserResource(UserResourceDto userResourceDto) {
         BeanUtils.copyProperties(userResourceDto, this);

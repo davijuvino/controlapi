@@ -228,7 +228,7 @@ public class UserServicesTest {
 
         String result = userServices.deleteUser(1L);
 
-        assertEquals("Usuário excluído com sucesso!", result);
+        assertEquals("Excluído com sucesso!", result);
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, times(1)).deleteById(1L);
     }
