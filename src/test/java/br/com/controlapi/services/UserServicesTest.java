@@ -1,6 +1,6 @@
 package br.com.controlapi.services;
 
-import br.com.controlapi.constants.Msg;
+import br.com.controlapi.constants.Message;
 import br.com.controlapi.dto.UserDto;
 import br.com.controlapi.exception.NotFoundException;
 import br.com.controlapi.exception.UserCreationException;
@@ -215,7 +215,7 @@ public class UserServicesTest {
         NotFoundException exception = assertThrows(NotFoundException.class,
                 () -> userServices.updateUser(userId, userDto));
 
-        String expectedMessage = String.format(Msg.USER_NOT_FOUND, userId);
+        String expectedMessage = String.format(Message.INFO_NOT_FOUND, userId);
         assertEquals(expectedMessage, exception.getMessage());
         verify(userRepository).findById(userId);
         verify(userRepository, never()).save(any(User.class));

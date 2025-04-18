@@ -1,6 +1,6 @@
 package br.com.controlapi.services;
 
-import br.com.controlapi.constants.Msg;
+import br.com.controlapi.constants.Message;
 import br.com.controlapi.dto.UserResourceDto;
 import br.com.controlapi.exception.NotFoundException;
 import br.com.controlapi.exception.UserResourceCreationException;
@@ -124,7 +124,7 @@ public class UserResourceServicesTest {
 
         String result = userResourceServices.deleteResource(1L);
 
-        assertEquals(Msg.USER_RESOURCE_DELETION_SUCCESS, result);
+        assertEquals(Message.INFO_DELETION_SUCCESS, result);
         verify(UserResourceRepository, times(1)).findById(1L);
         verify(UserResourceRepository, times(1)).deleteById(1L);
     }
@@ -204,7 +204,7 @@ public class UserResourceServicesTest {
         NotFoundException exception = assertThrows(NotFoundException.class,
                 () -> userResourceServices.deleteResource(nonExistentResourceId));
 
-        String expectedMessage = String.format(Msg.USER_RESOURCE_NOT_FOUND, nonExistentResourceId);
+        String expectedMessage = String.format(Message.INFO_NOT_FOUND, nonExistentResourceId);
         assertEquals(expectedMessage, exception.getMessage());
         verify(UserResourceRepository, times(1)).findById(nonExistentResourceId);
         verify(UserResourceRepository, never()).deleteById(anyLong());
