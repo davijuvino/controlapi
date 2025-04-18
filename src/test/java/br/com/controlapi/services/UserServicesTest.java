@@ -3,8 +3,8 @@ package br.com.controlapi.services;
 import br.com.controlapi.constants.Message;
 import br.com.controlapi.dto.UserDto;
 import br.com.controlapi.exception.NotFoundException;
-import br.com.controlapi.exception.UserCreationException;
-import br.com.controlapi.exception.UserUpdateException;
+import br.com.controlapi.exception.CreationException;
+import br.com.controlapi.exception.UpdateException;
 import br.com.controlapi.model.User;
 import br.com.controlapi.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +60,7 @@ public class UserServicesTest {
         userDto.setEmail("test@example.com");
         when(userRepository.existsByEmail(userDto.getEmail())).thenReturn(true);
 
-        assertThrows(UserCreationException.class, () -> userServices.createUser(userDto));
+        assertThrows(CreationException.class, () -> userServices.createUser(userDto));
         verify(userRepository, times(1)).existsByEmail(userDto.getEmail());
         verify(userRepository, never()).save(any(User.class));
     }
@@ -129,7 +129,7 @@ public class UserServicesTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Database error"));
 
-        assertThrows(UserUpdateException.class, () -> userServices.updateUser(userId, userDto));
+        assertThrows(UpdateException.class, () -> userServices.updateUser(userId, userDto));
 
     }
 
@@ -202,7 +202,7 @@ public class UserServicesTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Invalid data"));
 
-        assertThrows(UserUpdateException.class, () -> userServices.updateUser(userId, userDto));
+        assertThrows(UpdateException.class, () -> userServices.updateUser(userId, userDto));
 
     }
 

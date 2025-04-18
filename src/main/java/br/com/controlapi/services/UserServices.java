@@ -3,8 +3,8 @@ package br.com.controlapi.services;
 import br.com.controlapi.constants.Message;
 import br.com.controlapi.dto.UserDto;
 import br.com.controlapi.exception.NotFoundException;
-import br.com.controlapi.exception.UserCreationException;
-import br.com.controlapi.exception.UserUpdateException;
+import br.com.controlapi.exception.CreationException;
+import br.com.controlapi.exception.UpdateException;
 import br.com.controlapi.model.User;
 import br.com.controlapi.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class UserServices {
         logger.info("Iniciando a criação do usuário com email: {}", userDTO.getEmail());
         try {
             if (userRepository.existsByEmail(userDTO.getEmail())) {
-                throw new UserCreationException(String.format(Message.INFO_ALREADY_EXISTS, userDTO.getEmail()));
+                throw new CreationException(String.format(Message.INFO_ALREADY_EXISTS, userDTO.getEmail()));
             }
             User user = new User(userDTO);
             User savedUser = userRepository.save(user);
@@ -39,7 +39,7 @@ public class UserServices {
             return new UserDto(savedUser);
         } catch (Exception e) {
             logger.error(Message.INFO_CREATION_ERROR, e.getMessage());
-            throw new UserCreationException(String.format(Message.INFO_CREATION_ERROR, e.getMessage()));
+            throw new CreationException(String.format(Message.INFO_CREATION_ERROR, e.getMessage()));
         }
     }
 
@@ -64,7 +64,7 @@ public class UserServices {
                 return new UserDto(updatedUser);
             } catch (Exception e) {
                 logger.error(Message.INFO_UPDATE_ERROR, e.getMessage());
-                throw new UserUpdateException(String.format(Message.INFO_UPDATE_ERROR, e.getMessage()));
+                throw new UpdateException(String.format(Message.INFO_UPDATE_ERROR, e.getMessage()));
             }
 
         }).orElseThrow(() -> new NotFoundException(String.format(Message.INFO_NOT_FOUND, userId)));

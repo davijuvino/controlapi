@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserCreationException.class)
-    public ResponseEntity<String> handleUserCreationException(UserCreationException ex) {
+    @ExceptionHandler(CreationException.class)
+    public ResponseEntity<String> handleUserCreationException(CreationException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

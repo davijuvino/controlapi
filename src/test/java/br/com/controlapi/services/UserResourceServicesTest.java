@@ -2,8 +2,8 @@ package br.com.controlapi.services;
 
 import br.com.controlapi.constants.Message;
 import br.com.controlapi.dto.UserResourceDto;
+import br.com.controlapi.exception.CreationException;
 import br.com.controlapi.exception.NotFoundException;
-import br.com.controlapi.exception.UserResourceCreationException;
 import br.com.controlapi.model.UserResource;
 import br.com.controlapi.repository.UserResourceRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +58,7 @@ public class UserResourceServicesTest {
         userResourceDto.setKeyId("testKey");
         when(UserResourceRepository.existsByKeyId(userResourceDto.getKeyId())).thenReturn(true);
 
-        assertThrows(UserResourceCreationException.class, () -> userResourceServices.createResource(userResourceDto));
+        assertThrows(CreationException.class, () -> userResourceServices.createResource(userResourceDto));
         verify(UserResourceRepository, times(1)).existsByKeyId(userResourceDto.getKeyId());
         verify(UserResourceRepository, never()).save(any(UserResource.class));
     }
@@ -189,7 +189,7 @@ public class UserResourceServicesTest {
         when(UserResourceRepository.findById(resourceId)).thenReturn(Optional.of(existingUserResource));
         when(UserResourceRepository.save(any(UserResource.class))).thenThrow(new RuntimeException("Database error"));
 
-        assertThrows(UserResourceCreationException.class, () -> userResourceServices.updateResource(resourceId, userResourceDto));
+        assertThrows(CreationException.class, () -> userResourceServices.updateResource(resourceId, userResourceDto));
 
         verify(UserResourceRepository, times(1)).findById(resourceId);
         verify(UserResourceRepository, times(1)).save(any(UserResource.class));
