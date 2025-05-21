@@ -1,7 +1,7 @@
 > Projeto API Controle Despesas
 
 > Endpoints
-> /users - usuarios associados ha uma despesa ou não associados
+> /usuarios - usuarios associados ha uma despesa ou não associados
   ```json
       {
          "name":"João da Silva",
@@ -10,7 +10,7 @@
          "createAt":"2025-03-23T13:42:00",
          "deleteAt":null,
          "updateAt":null,
-         "expenses":[
+         "despesas":[
             {
                "name":"João da Silva",
                "category":"joao.silva@example.com",
@@ -101,7 +101,7 @@ By following these practices, you’ll create entities that are well-structured,
 - https://www.baeldung.com/spring-cache-ehcache
 - exemplo:  https://dev.to/noelopez/spring-cache-speed-up-your-app-1gf6
 ```java 
-    @Cacheable("users")
+    @Cacheable("usuarios")
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }

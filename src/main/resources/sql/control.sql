@@ -1,96 +1,92 @@
-
-DROP TABLE users IF EXISTS;
-CREATE TABLE `users` (
+-- Script para criar as tabelas do banco de dados
+DROP TABLE usuarios IF EXISTS;
+CREATE TABLE `usuarios` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) DEFAULT NULL,
+  `nome` VARCHAR(50) DEFAULT NULL,
   `email` VARCHAR(50) DEFAULT NULL,
   `login` VARCHAR(50) DEFAULT NULL,
-  `password` VARCHAR(50) DEFAULT NULL,
-  `update_at` DATETIME DEFAULT NULL,
-  `create_at` DATETIME NOT NULL,
-  `delete_at` DATETIME DEFAULT NULL,
+  `senha` VARCHAR(50) DEFAULT NULL,
+  `atualizado_at` DATETIME DEFAULT NULL,
+  `criado_at` DATETIME NOT NULL,
+  `deletado_at` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 
-DROP TABLE expenses IF EXISTS ;
-CREATE TABLE `expenses` (
+DROP TABLE despesas IF EXISTS ;
+CREATE TABLE `despesas` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) DEFAULT NULL,
-  `category` VARCHAR(100) DEFAULT NULL,
-  `description` VARCHAR(255) DEFAULT NULL,
-  `create_at` DATETIME NOT NULL,
-  `update_at` DATETIME DEFAULT NULL,
-  `delete_at` DATETIME DEFAULT NULL,
-  `user_id` BIGINT NOT NULL,
+  `nome` VARCHAR(50) DEFAULT NULL,
+  `categoria` VARCHAR(100) DEFAULT NULL,
+  `descricao` VARCHAR(255) DEFAULT NULL,
+  `criado_at` DATETIME NOT NULL,
+  `atualizado_at` DATETIME DEFAULT NULL,
+  `deletado_at` DATETIME DEFAULT NULL,
+  `usuario_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`)
 );
 
-DROP TABLE product IF EXISTS ;
-CREATE TABLE `product` (
+DROP TABLE produto IF EXISTS ;
+CREATE TABLE `produto` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `amount` INT DEFAULT NULL,
-  `price` DECIMAL(38,2) DEFAULT NULL,
-  `date_at` DATE DEFAULT NULL,
-  `create_at` DATETIME NOT NULL,
-  `update_at` DATETIME DEFAULT NULL,
-  `delete_at` DATETIME DEFAULT NULL,
-  `expense_id` BIGINT NOT NULL,
+  `quantidade` INT DEFAULT NULL,
+  `preco` DECIMAL(38,2) DEFAULT NULL,
+  `data_at` DATE DEFAULT NULL,
+  `criado_at` DATETIME NOT NULL,
+  `atualizado_at` DATETIME DEFAULT NULL,
+  `deletado_at` DATETIME DEFAULT NULL,
+  `despesa_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`)
 );
 
-DROP TABLE npl_profile IF EXISTS ;
-CREATE TABLE npl_profile (
+DROP TABLE npl_perfil IF EXISTS ;
+CREATE TABLE npl_perfil (
     id BIGINT PRIMARY KEY,
-    description VARCHAR(255) NOT NULL
+    descricao VARCHAR(255) NOT NULL
 );
 
-DROP TABLE npl_resource_permission_profile IF EXISTS ;
-CREATE TABLE npl_resource_permission_profile (
+DROP TABLE npl_perfil_permissao IF EXISTS ;
+CREATE TABLE npl_perfil_permissao (
     id BIGINT PRIMARY KEY,
-    profile_id BIGINT NOT NULL,
-    resource_id BIGINT NOT NULL
+    perfil_id BIGINT NOT NULL,
+    recurso_id BIGINT NOT NULL
 );
 
-DROP TABLE npl_user_profile IF EXISTS ;
-CREATE TABLE npl_user_profile (
+DROP TABLE npl_perfil_usuario IF EXISTS ;
+CREATE TABLE npl_perfil_usuario (
     id BIGINT PRIMARY KEY,
-    profile_id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL
+    perfil_id BIGINT NOT NULL,
+    usuario_id BIGINT NOT NULL
 );
 
-DROP TABLE npl_verifying_user IF EXISTS ;
-CREATE TABLE npl_verifying_user (
+DROP TABLE npl_usuario_verificador IF EXISTS ;
+CREATE TABLE npl_usuario_verificador (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    expiration_date TIMESTAMP(6) NOT NULL,
+    data_expiracao TIMESTAMP(6) NOT NULL,
     uuid CHAR(36) NOT NULL,
-    user_id BIGINT NOT NULL
+    usuario_id BIGINT NOT NULL
 );
 
-DROP TABLE user_resource IF EXISTS ;
-CREATE TABLE user_resource (
+DROP TABLE recurso IF EXISTS ;
+CREATE TABLE recurso (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    key_id VARCHAR(255),
-    name VARCHAR(255)
+    chave_id VARCHAR(255),
+    nome VARCHAR(255)
 );
 
-ALTER TABLE expenses
-    ADD CONSTRAINT FK_expenses_users FOREIGN KEY (user_id) REFERENCES users(id);
+ALTER TABLE despesas
+    ADD CONSTRAINT FK_despesas_usuarios FOREIGN KEY (usuario_id) REFERENCES usuarios;
 
-ALTER TABLE npl_resource_permission_profile
-    ADD CONSTRAINT FK_profile FOREIGN KEY (profile_id) REFERENCES npl_profile(id);
+ALTER TABLE npl_perfil_permissao
+    ADD CONSTRAINT FK_permissao_perfil FOREIGN KEY (perfil_id) REFERENCES npl_perfil,
+    ADD CONSTRAINT FK_permissao_recurso FOREIGN KEY (recurso_id) REFERENCES recurso;
 
-ALTER TABLE npl_resource_permission_profile
-    ADD CONSTRAINT FK_resource FOREIGN KEY (resource_id) REFERENCES user_resource(id);
+ALTER TABLE npl_perfil_usuario
+    ADD CONSTRAINT FK_perfil_usuario FOREIGN KEY (perfil_id) REFERENCES npl_perfil,
+    ADD CONSTRAINT FK_usuario_perfil FOREIGN KEY (usuario_id) REFERENCES usuarios;
 
-ALTER TABLE npl_user_profile
-    ADD CONSTRAINT FK_user_profile FOREIGN KEY (profile_id) REFERENCES npl_profile(id);
+ALTER TABLE npl_usuario_verificador
+    ADD CONSTRAINT FK_verificador_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios;
 
-ALTER TABLE npl_user_profile
-    ADD CONSTRAINT FK_user FOREIGN KEY (user_id) REFERENCES users(id);
-
-ALTER TABLE npl_verifying_user
-    ADD CONSTRAINT FK_verifying_user FOREIGN KEY (user_id) REFERENCES users(id);
-
-ALTER TABLE product
-    ADD CONSTRAINT FK_product_expense FOREIGN KEY (expense_id) REFERENCES expenses(id);
+ALTER TABLE produto
+    ADD CONSTRAINT FK_produto_despesa FOREIGN KEY (despesa_id) REFERENCES despesas;
 
