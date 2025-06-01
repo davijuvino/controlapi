@@ -34,14 +34,14 @@ public class UsuariosRecursoControllerTest {
         resource1.setId(1L);
         resource1.setNome("Recurso 1");
         List<RecursoDto> expectedResources = List.of(resource1);
-        when(recursoServices.getAllRecursos()).thenReturn(expectedResources);
+        when(recursoServices.buscarTodos()).thenReturn(expectedResources);
 
         // Act
-        List<RecursoDto> actualResources = recursoController.getAllResources();
+        List<RecursoDto> actualResources = recursoController.buscarTodos();
 
         // Assert
         assertEquals(expectedResources, actualResources);
-        verify(recursoServices, times(1)).getAllRecursos();
+        verify(recursoServices, times(1)).buscarTodos();
     }
 
     @Test
@@ -51,14 +51,14 @@ public class UsuariosRecursoControllerTest {
         RecursoDto expectedResource = new RecursoDto();
         expectedResource.setId(1L);
         expectedResource.setNome("Recurso 1");
-        when(recursoServices.getRecursoById(1L)).thenReturn(expectedResource);
+        when(recursoServices.buscarPorId(1L)).thenReturn(expectedResource);
 
         // Act
-        RecursoDto actualResource = recursoController.getResourceById(1L);
+        RecursoDto actualResource = recursoController.buscarPorId(1L);
 
         // Assert
         assertEquals(expectedResource, actualResource);
-        verify(recursoServices, times(1)).getRecursoById(1L);
+        verify(recursoServices, times(1)).buscarPorId(1L);
     }
 
     @Test
@@ -72,15 +72,15 @@ public class UsuariosRecursoControllerTest {
         createdResource.setId(1L);
         createdResource.setNome("Recurso 1");
 
-        when(recursoServices.criarRecurso(recursoDto)).thenReturn(createdResource);
+        when(recursoServices.criar(recursoDto)).thenReturn(createdResource);
 
         // Act
-        ResponseEntity<RecursoDto> response = recursoController.criarRecurso(recursoDto);
+        ResponseEntity<RecursoDto> response = recursoController.criar(recursoDto);
 
         // Assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(createdResource, response.getBody());
-        verify(recursoServices, times(1)).criarRecurso(recursoDto);
+        verify(recursoServices, times(1)).criar(recursoDto);
     }
 
     @Test
@@ -89,28 +89,28 @@ public class UsuariosRecursoControllerTest {
         RecursoDto recursoDto = new RecursoDto();
         recursoDto.setId(1L);
         recursoDto.setNome("Updated Recurso");
-        when(recursoServices.atualizarRecurso(1L, recursoDto)).thenReturn(recursoDto);
+        when(recursoServices.atualizar(1L, recursoDto)).thenReturn(recursoDto);
 
         // Act
-        RecursoDto updatedResource = recursoController.atualizarRecurso(1L, recursoDto);
+        RecursoDto updatedResource = recursoController.atualizar(1L, recursoDto);
 
         // Assert
         assertEquals(recursoDto, updatedResource);
-        verify(recursoServices, times(1)).atualizarRecurso(1L, recursoDto);
+        verify(recursoServices, times(1)).atualizar(1L, recursoDto);
     }
 
     @Test
     public void testDeletarRecurso() {
         // Arrange
         String expectedResponse = "Recurso deleted successfully";
-        when(recursoServices.deletarRecurso(1L)).thenReturn(expectedResponse);
+        when(recursoServices.delete(1L)).thenReturn(expectedResponse);
 
         // Act
-        ResponseEntity<String> response = recursoController.deletarRecurso(1L);
+        ResponseEntity<String> response = recursoController.deletar(1L);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedResponse, response.getBody());
-        verify(recursoServices, times(1)).deletarRecurso(1L);
+        verify(recursoServices, times(1)).delete(1L);
     }
 }

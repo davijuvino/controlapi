@@ -1,8 +1,8 @@
 package br.com.controlapi.services;
 
-import br.com.controlapi.constants.Mensagem;
 import br.com.controlapi.dto.RecursoDto;
 import br.com.controlapi.exception.CriacaoException;
+import br.com.controlapi.exception.JaExisteException;
 import br.com.controlapi.exception.NaoEncontradoException;
 import br.com.controlapi.model.Recurso;
 import br.com.controlapi.repository.RecursoRepository;
@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 @AllArgsConstructor
 public class RecursoServices {
@@ -25,51 +26,51 @@ public class RecursoServices {
     private RecursoRepository RecursoRepository;
 
     @Transactional
-    public RecursoDto criarRecurso(@Valid RecursoDto recursoDTO) {
+    public RecursoDto criar(@Valid RecursoDto recursoDTO) {
         logger.info("Iniciando a criação do recurso com key: {}", recursoDTO.getChaveId());
+        if (RecursoRepository.existsByChaveId(recursoDTO.getChaveId())) {
+            throw new JaExisteException(recursoDTO.getChaveId());
+        }
         try {
-            if (RecursoRepository.existsByChaveId(recursoDTO.getChaveId())) {
-                throw new CriacaoException(String.format(Mensagem.INFO_JA_EXISTE, recursoDTO.getChaveId()));
-            }
             Recurso recurso = new Recurso(recursoDTO);
             Recurso savedRecurso = RecursoRepository.save(recurso);
-            logger.info(Mensagem.CRIAR_OK, savedRecurso.getId());
+            logger.info("Criado com sucesso com ID: {}", savedRecurso.getId());
             return new RecursoDto(savedRecurso);
         } catch (Exception e) {
-            logger.error(Mensagem.CRIAR_NOK, e.getMessage());
-            throw new CriacaoException(String.format(Mensagem.CRIAR_NOK, e.getMessage()));
+            logger.error("Erro inesperado ao criar: {}", e.getMessage(), e);
+            throw new CriacaoException(e.getMessage());
         }
     }
 
-    public List<RecursoDto> getAllRecursos() {
-        return RecursoRepository.findAll().stream()
+    public List<RecursoDto> buscarTodos() {
+        return RecursoRepository.findAll()
+                .stream()
                 .map(RecursoDto::new)
                 .collect(Collectors.toList());
     }
 
-    public RecursoDto getRecursoById(Long recursoId) {
-        return RecursoRepository.findById(recursoId).map(RecursoDto::new)
-                .orElseThrow(() -> new NaoEncontradoException(String.format(Mensagem.INFO_NAO_ENCONTRADO, recursoId)));
+    public RecursoDto buscarPorId(Long recursoId) {
+        return RecursoRepository.findById(recursoId)
+                .map(RecursoDto::new)
+                .orElseThrow(() -> new NaoEncontradoException(recursoId));
     }
 
-    public RecursoDto atualizarRecurso(Long recursoId, RecursoDto recursoDto) {
-        return RecursoRepository.findById(recursoId).map(resource -> {
-            try {
-                BeanUtils.copyProperties(recursoDto, resource, "id");
-                logger.info(Mensagem.ATUALIZAR_OK, resource.getId());
-                return new RecursoDto(RecursoRepository.save(resource));
-            } catch (Exception e) {
-                logger.error(Mensagem.ATUALIZAR_NOK, e.getMessage());
-                throw new CriacaoException(String.format(Mensagem.ATUALIZAR_NOK, e.getMessage()));
-            }
-
-        }).orElseThrow(() -> new NaoEncontradoException(String.format(Mensagem.INFO_NAO_ENCONTRADO, recursoId)));
+    public RecursoDto atualizar(Long recursoId, RecursoDto recursoDto) {
+        return RecursoRepository.findById(recursoId)
+                .map(resource -> {
+                    BeanUtils.copyProperties(recursoDto, resource, "id");
+                    logger.info("Atualizado com sucesso com Id: {}", resource.getId());
+                    return new RecursoDto(RecursoRepository.save(resource));
+                })
+                .orElseThrow(() -> new NaoEncontradoException(recursoId));
     }
 
-    public String deletarRecurso(Long recursoId) {
-        return RecursoRepository.findById(recursoId).map(resource -> {
-            RecursoRepository.deleteById(recursoId);
-            return Mensagem.DELETE_OK;
-        }).orElseThrow(() -> new NaoEncontradoException(String.format(Mensagem.INFO_NAO_ENCONTRADO, recursoId)));
+    public String delete(Long recursoId) {
+        return RecursoRepository.findById(recursoId)
+                .map(resource -> {
+                    RecursoRepository.deleteById(recursoId);
+                    return "Excluído com sucesso!";
+                })
+                .orElseThrow(() -> new NaoEncontradoException(recursoId));
     }
 }

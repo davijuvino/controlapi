@@ -10,33 +10,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/recursos")
 public class RecursoController {
 
     @Autowired
     private RecursoServices recursoServices;
 
-    @GetMapping("/recursos")
-    public List<RecursoDto> getAllResources() {
-        return recursoServices.getAllRecursos();
+    @GetMapping
+    public List<RecursoDto> buscarTodos() {
+        return recursoServices.buscarTodos();
     }
 
-    @GetMapping("/recursos/{recursoId}")
-    public RecursoDto getResourceById(@PathVariable Long recursoId) {
-        return recursoServices.getRecursoById(recursoId);
+    @GetMapping("/{recursoId}")
+    public RecursoDto buscarPorId(@PathVariable Long recursoId) {
+        return recursoServices.buscarPorId(recursoId);
     }
 
-    @PostMapping("/recursos")
-    public ResponseEntity<RecursoDto> criarRecurso(@RequestBody RecursoDto recursoDto) {
-        return new ResponseEntity<>(recursoServices.criarRecurso(recursoDto), HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<RecursoDto> criar(@RequestBody RecursoDto recursoDto) {
+        return new ResponseEntity<>(recursoServices.criar(recursoDto), HttpStatus.CREATED);
     }
 
-    @PutMapping("/recursos/{recursoId}")
-    public RecursoDto atualizarRecurso(@PathVariable Long resourceId, @RequestBody RecursoDto recursoDto) {
-        return recursoServices.atualizarRecurso(resourceId, recursoDto);
+    @PutMapping("/{recursoId}")
+    public RecursoDto atualizar(@PathVariable Long recursoId, @RequestBody RecursoDto recursoDto) {
+        return recursoServices.atualizar(recursoId, recursoDto);
     }
 
-    @DeleteMapping("/recursos/{recursoId}")
-    public ResponseEntity<String> deletarRecurso(@PathVariable Long recursoId) {
-        return new ResponseEntity<>(recursoServices.deletarRecurso(recursoId), HttpStatus.OK);
+    @DeleteMapping("/{recursoId}")
+    public ResponseEntity<String> deletar(@PathVariable Long recursoId) {
+        return new ResponseEntity<>(recursoServices.delete(recursoId), HttpStatus.OK);
     }
 }

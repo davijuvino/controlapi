@@ -16,4 +16,8 @@ public class NaoEncontradoException extends RuntimeException {
     public NaoEncontradoException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public NaoEncontradoException(Long id) {
+        super("Não encontrado com Id: " + id);
+    }
 }

@@ -38,14 +38,14 @@ public class UsuariosRecursoServicesTest {
     }
 
     @Test
-    void criarRecurso() {
+    void criar() {
         RecursoDto recursoDto = new RecursoDto();
         recursoDto.setChaveId("testKey");
         Recurso recurso = new Recurso(recursoDto);
         when(RecursoRepository.existsByChaveId(recursoDto.getChaveId())).thenReturn(false);
         when(RecursoRepository.save(any(Recurso.class))).thenReturn(recurso);
 
-        RecursoDto result = recursoServices.criarRecurso(recursoDto);
+        RecursoDto result = recursoServices.criar(recursoDto);
 
         assertEquals(recursoDto.getChaveId(), result.getChaveId());
         verify(RecursoRepository, times(1)).existsByChaveId(recursoDto.getChaveId());
@@ -53,12 +53,12 @@ public class UsuariosRecursoServicesTest {
     }
 
     @Test
-    void criarRecurso_ThrowsException_WhenKeyExists() {
+    void criar_ThrowsException_WhenKeyExists() {
         RecursoDto recursoDto = new RecursoDto();
         recursoDto.setChaveId("testKey");
         when(RecursoRepository.existsByChaveId(recursoDto.getChaveId())).thenReturn(true);
 
-        assertThrows(CriacaoException.class, () -> recursoServices.criarRecurso(recursoDto));
+        assertThrows(CriacaoException.class, () -> recursoServices.criar(recursoDto));
         verify(RecursoRepository, times(1)).existsByChaveId(recursoDto.getChaveId());
         verify(RecursoRepository, never()).save(any(Recurso.class));
     }
@@ -68,7 +68,7 @@ public class UsuariosRecursoServicesTest {
         List<Recurso> recursos = Arrays.asList(new Recurso(), new Recurso());
         when(RecursoRepository.findAll()).thenReturn(recursos);
 
-        List<RecursoDto> result = recursoServices.getAllRecursos();
+        List<RecursoDto> result = recursoServices.buscarTodos();
 
         assertEquals(recursos.size(), result.size());
         verify(RecursoRepository, times(1)).findAll();
@@ -79,7 +79,7 @@ public class UsuariosRecursoServicesTest {
         Recurso recurso = new Recurso();
         when(RecursoRepository.findById(1L)).thenReturn(Optional.of(recurso));
 
-        RecursoDto result = recursoServices.getRecursoById(1L);
+        RecursoDto result = recursoServices.buscarPorId(1L);
 
         assertNotNull(result);
         verify(RecursoRepository, times(1)).findById(1L);
@@ -89,18 +89,18 @@ public class UsuariosRecursoServicesTest {
     void getResourceById_ThrowsException_WhenRecursoNotFound() {
         when(RecursoRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(NaoEncontradoException.class, () -> recursoServices.getRecursoById(1L));
+        assertThrows(NaoEncontradoException.class, () -> recursoServices.buscarPorId(1L));
         verify(RecursoRepository, times(1)).findById(1L);
     }
 
     @Test
-    void atualizarRecurso() {
+    void atualizar() {
         RecursoDto recursoDto = new RecursoDto();
         Recurso recurso = new Recurso();
         when(RecursoRepository.findById(1L)).thenReturn(Optional.of(recurso));
         when(RecursoRepository.save(any(Recurso.class))).thenReturn(recurso);
 
-        RecursoDto result = recursoServices.atualizarRecurso(1L, recursoDto);
+        RecursoDto result = recursoServices.atualizar(1L, recursoDto);
 
         assertNotNull(result);
         verify(RecursoRepository, times(1)).findById(1L);
@@ -108,21 +108,21 @@ public class UsuariosRecursoServicesTest {
     }
 
     @Test
-    void atualizarRecursoNotFound() {
+    void atualizarNotFound() {
         RecursoDto recursoDto = new RecursoDto();
         when(RecursoRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(NaoEncontradoException.class, () -> recursoServices.atualizarRecurso(1L, recursoDto));
+        assertThrows(NaoEncontradoException.class, () -> recursoServices.atualizar(1L, recursoDto));
         verify(RecursoRepository, times(1)).findById(1L);
         verify(RecursoRepository, never()).save(any(Recurso.class));
     }
 
     @Test
-    void deletarRecurso() {
+    void delete() {
         Recurso recurso = new Recurso();
         when(RecursoRepository.findById(1L)).thenReturn(Optional.of(recurso));
 
-        String result = recursoServices.deletarRecurso(1L);
+        String result = recursoServices.delete(1L);
 
         assertEquals(Mensagem.DELETE_OK, result);
         verify(RecursoRepository, times(1)).findById(1L);
@@ -130,16 +130,16 @@ public class UsuariosRecursoServicesTest {
     }
 
     @Test
-    void deletarRecursoNotFound() {
+    void deleteNotFound() {
         when(RecursoRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(NaoEncontradoException.class, () -> recursoServices.deletarRecurso(1L));
+        assertThrows(NaoEncontradoException.class, () -> recursoServices.delete(1L));
         verify(RecursoRepository, times(1)).findById(1L);
         verify(RecursoRepository, never()).deleteById(1L);
     }
 
     @Test
-    void atualizarRecurso_WhenGivenValidInputAndExistingId() {
+    void atualizar_WhenGivenValidInputAndExistingId() {
         // Arrange
         Long resourceId = 1L;
         RecursoDto recursoDto = new RecursoDto();
@@ -156,7 +156,7 @@ public class UsuariosRecursoServicesTest {
         when(RecursoRepository.save(any(Recurso.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        RecursoDto result = recursoServices.atualizarRecurso(resourceId, recursoDto);
+        RecursoDto result = recursoServices.atualizar(resourceId, recursoDto);
 
         // Assert
         assertNotNull(result);
@@ -172,7 +172,7 @@ public class UsuariosRecursoServicesTest {
     void getAllResources_ReturnsEmptyList_WhenNoRecursosExist() {
         when(RecursoRepository.findAll()).thenReturn(Collections.emptyList());
 
-        List<RecursoDto> result = recursoServices.getAllRecursos();
+        List<RecursoDto> result = recursoServices.buscarTodos();
 
         assertTrue(result.isEmpty());
         verify(RecursoRepository, times(1)).findAll();
@@ -180,7 +180,7 @@ public class UsuariosRecursoServicesTest {
 
 
     @Test
-    void atualizarRecursoCreationException_WhenErrorOccurs() {
+    void atualizarCreationException_WhenErrorOccurs() {
         Long resourceId = 1L;
         RecursoDto recursoDto = new RecursoDto();
         Recurso existingRecurso = new Recurso();
@@ -189,7 +189,7 @@ public class UsuariosRecursoServicesTest {
         when(RecursoRepository.findById(resourceId)).thenReturn(Optional.of(existingRecurso));
         when(RecursoRepository.save(any(Recurso.class))).thenThrow(new RuntimeException("Database error"));
 
-        assertThrows(CriacaoException.class, () -> recursoServices.atualizarRecurso(resourceId, recursoDto));
+        assertThrows(CriacaoException.class, () -> recursoServices.atualizar(resourceId, recursoDto));
 
         verify(RecursoRepository, times(1)).findById(resourceId);
         verify(RecursoRepository, times(1)).save(any(Recurso.class));
@@ -197,12 +197,12 @@ public class UsuariosRecursoServicesTest {
     }
 
     @Test
-    void deletarRecursoDoesNotExist() {
+    void deleteDoesNotExist() {
         Long nonExistentResourceId = 999L;
         when(RecursoRepository.findById(nonExistentResourceId)).thenReturn(Optional.empty());
 
         NaoEncontradoException exception = assertThrows(NaoEncontradoException.class,
-                () -> recursoServices.deletarRecurso(nonExistentResourceId));
+                () -> recursoServices.delete(nonExistentResourceId));
 
         String expectedMessage = String.format(Mensagem.INFO_NAO_ENCONTRADO, nonExistentResourceId);
         assertEquals(expectedMessage, exception.getMessage());
