@@ -1,6 +1,7 @@
 package br.com.controlapi.model;
 
 import br.com.controlapi.dto.UsuariosDto;
+import br.com.controlapi.model.enums.SituacaoUsuario;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +35,9 @@ public class Usuarios {
     @OneToMany(mappedBy = "usuarios", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Despesas> despesas = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SituacaoUsuario situacao;
 
     public Usuarios(UsuariosDto usuariosDto){
         BeanUtils.copyProperties(usuariosDto, this);

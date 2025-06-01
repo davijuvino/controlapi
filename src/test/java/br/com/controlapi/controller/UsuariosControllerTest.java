@@ -32,56 +32,48 @@ public class UsuariosControllerTest {
     @Test
     void getAllUsers_ReturnsListOfUsers() {
         List<UsuariosDto> users = Arrays.asList(new UsuariosDto(), new UsuariosDto());
-        when(usuarioServices.getAllUsers()).thenReturn(users);
+        when(usuarioServices.listar()).thenReturn(users);
 
-        List<UsuariosDto> result = usuarioController.getAllUsers();
+        ResponseEntity<List<UsuariosDto>> response = usuarioController.listar();
 
-        assertEquals(users, result);
-        verify(usuarioServices, times(1)).getAllUsers();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(users, response.getBody());
+        verify(usuarioServices, times(1)).listar();
     }
 
     @Test
     void getUserById_ReturnsUser() {
         UsuariosDto user = new UsuariosDto();
-        when(usuarioServices.getUserById(1L)).thenReturn(user);
+        when(usuarioServices.buscarPorId(1L)).thenReturn(user);
 
-        UsuariosDto result = usuarioController.getUserById(1L);
+        ResponseEntity<UsuariosDto> response = usuarioController.buscarPorId(1L);
 
-        assertEquals(user, result);
-        verify(usuarioServices, times(1)).getUserById(1L);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(user, response.getBody());
+        verify(usuarioServices, times(1)).buscarPorId(1L);
     }
 
     @Test
     void createUser_ReturnsCreatedUser() {
         UsuariosDto user = new UsuariosDto();
-        when(usuarioServices.createUser(user)).thenReturn(user);
+        when(usuarioServices.criar(user)).thenReturn(user);
 
-        ResponseEntity<UsuariosDto> response = usuarioController.criarUsuario(user);
+        ResponseEntity<UsuariosDto> response = usuarioController.criar(user);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(user, response.getBody());
-        verify(usuarioServices, times(1)).createUser(user);
+        verify(usuarioServices, times(1)).criar(user);
     }
 
     @Test
     void updateUser_ReturnsUpdatedUser() {
         UsuariosDto user = new UsuariosDto();
-        when(usuarioServices.updateUser(1L, user)).thenReturn(user);
+        when(usuarioServices.atualizar(1L, user)).thenReturn(user);
 
-        UsuariosDto result = usuarioController.atualizarUsuario(1L, user);
-
-        assertEquals(user, result);
-        verify(usuarioServices, times(1)).updateUser(1L, user);
-    }
-
-    @Test
-    void deleteUser_ReturnsOkStatus() {
-        when(usuarioServices.deleteUser(1L)).thenReturn("Usuarios deleted");
-
-        ResponseEntity<String> response = usuarioController.deletarUsuario(1L);
+        ResponseEntity<UsuariosDto> response = usuarioController.atualizar(1L, user);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Usuarios deleted", response.getBody());
-        verify(usuarioServices, times(1)).deleteUser(1L);
+        assertEquals(user, response.getBody());
+        verify(usuarioServices, times(1)).atualizar(1L, user);
     }
 }

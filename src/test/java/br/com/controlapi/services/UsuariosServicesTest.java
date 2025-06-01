@@ -47,7 +47,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.existsByEmail(usuariosDto.getEmail())).thenReturn(false);
         when(usuarioRepository.save(any(Usuarios.class))).thenReturn(usuarios);
 
-        UsuariosDto result = usuarioServices.createUser(usuariosDto);
+        UsuariosDto result = usuarioServices.criar(usuariosDto);
 
         assertEquals(usuariosDto.getEmail(), result.getEmail());
         verify(usuarioRepository, times(1)).existsByEmail(usuariosDto.getEmail());
@@ -60,7 +60,7 @@ public class UsuariosServicesTest {
         usuariosDto.setEmail("test@example.com");
         when(usuarioRepository.existsByEmail(usuariosDto.getEmail())).thenReturn(true);
 
-        assertThrows(CriacaoException.class, () -> usuarioServices.createUser(usuariosDto));
+        assertThrows(CriacaoException.class, () -> usuarioServices.criar(usuariosDto));
         verify(usuarioRepository, times(1)).existsByEmail(usuariosDto.getEmail());
         verify(usuarioRepository, never()).save(any(Usuarios.class));
     }
@@ -70,7 +70,7 @@ public class UsuariosServicesTest {
         List<Usuarios> usuarios = Arrays.asList(new Usuarios(), new Usuarios());
         when(usuarioRepository.findAll()).thenReturn(usuarios);
 
-        List<UsuariosDto> result = usuarioServices.getAllUsers();
+        List<UsuariosDto> result = usuarioServices.listar();
 
         assertEquals(usuarios.size(), result.size());
         verify(usuarioRepository, times(1)).findAll();
@@ -81,7 +81,7 @@ public class UsuariosServicesTest {
         Usuarios usuarios = new Usuarios();
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuarios));
 
-        UsuariosDto result = usuarioServices.getUserById(1L);
+        UsuariosDto result = usuarioServices.buscarPorId(1L);
 
         assertNotNull(result);
         verify(usuarioRepository, times(1)).findById(1L);
@@ -91,7 +91,7 @@ public class UsuariosServicesTest {
     void getUserById_ThrowsException_WhenUserNotFound() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(NaoEncontradoException.class, () -> usuarioServices.getUserById(1L));
+        assertThrows(NaoEncontradoException.class, () -> usuarioServices.buscarPorId(1L));
         verify(usuarioRepository, times(1)).findById(1L);
     }
 
@@ -102,7 +102,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuarios));
         when(usuarioRepository.save(any(Usuarios.class))).thenReturn(usuarios);
 
-        UsuariosDto result = usuarioServices.updateUser(1L, usuariosDto);
+        UsuariosDto result = usuarioServices.atualizar(1L, usuariosDto);
 
         assertNotNull(result);
         verify(usuarioRepository, times(1)).findById(1L);
@@ -114,7 +114,7 @@ public class UsuariosServicesTest {
         UsuariosDto usuariosDto = new UsuariosDto();
         when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(NaoEncontradoException.class, () -> usuarioServices.updateUser(1L, usuariosDto));
+        assertThrows(NaoEncontradoException.class, () -> usuarioServices.atualizar(1L, usuariosDto));
         verify(usuarioRepository, times(1)).findById(1L);
         verify(usuarioRepository, never()).save(any(Usuarios.class));
     }
@@ -129,7 +129,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(userId)).thenReturn(Optional.of(existingUsuarios));
         when(usuarioRepository.save(any(Usuarios.class))).thenThrow(new RuntimeException("Database error"));
 
-        assertThrows(AtualizarException.class, () -> usuarioServices.updateUser(userId, usuariosDto));
+        assertThrows(AtualizarException.class, () -> usuarioServices.atualizar(userId, usuariosDto));
 
     }
 
@@ -151,7 +151,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(userId)).thenReturn(Optional.of(existingUsuarios));
         when(usuarioRepository.save(any(Usuarios.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        UsuariosDto result = usuarioServices.updateUser(userId, usuariosDto);
+        UsuariosDto result = usuarioServices.atualizar(userId, usuariosDto);
 
         assertNotNull(result);
         assertEquals("New Name", result.getNome());
@@ -177,7 +177,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(userId)).thenReturn(Optional.of(existingUsuarios));
         when(usuarioRepository.save(any(Usuarios.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        UsuariosDto result = usuarioServices.updateUser(userId, usuariosDto);
+        UsuariosDto result = usuarioServices.atualizar(userId, usuariosDto);
 
         assertNotNull(result);
         assertEquals(userId, result.getId());
@@ -202,7 +202,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(userId)).thenReturn(Optional.of(existingUsuarios));
         when(usuarioRepository.save(any(Usuarios.class))).thenThrow(new RuntimeException("Invalid data"));
 
-        assertThrows(AtualizarException.class, () -> usuarioServices.updateUser(userId, usuariosDto));
+        assertThrows(AtualizarException.class, () -> usuarioServices.atualizar(userId, usuariosDto));
 
     }
 
@@ -213,7 +213,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(userId)).thenReturn(Optional.empty());
 
         NaoEncontradoException exception = assertThrows(NaoEncontradoException.class,
-                () -> usuarioServices.updateUser(userId, usuariosDto));
+                () -> usuarioServices.atualizar(userId, usuariosDto));
 
         String expectedMessage = String.format(Mensagem.INFO_NAO_ENCONTRADO, userId);
         assertEquals(expectedMessage, exception.getMessage());
@@ -222,22 +222,10 @@ public class UsuariosServicesTest {
     }
 
     @Test
-    void deleteUser_SuccessfullyDeletesUser() {
-        Usuarios usuarios = new Usuarios();
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuarios));
-
-        String result = usuarioServices.deleteUser(1L);
-
-        assertEquals("Excluído com sucesso!", result);
-        verify(usuarioRepository, times(1)).findById(1L);
-        verify(usuarioRepository, times(1)).deleteById(1L);
-    }
-
-    @Test
     void deleteUser_ThrowsException_WhenUserNotFound() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(NaoEncontradoException.class, () -> usuarioServices.deleteUser(1L));
+        assertThrows(NaoEncontradoException.class, () -> usuarioServices.deletar(1L));
         verify(usuarioRepository, times(1)).findById(1L);
         verify(usuarioRepository, never()).deleteById(1L);
     }

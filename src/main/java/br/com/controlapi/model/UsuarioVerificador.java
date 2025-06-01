@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "npl_usuario_verificador")
+@Table(name = "npl_usuario_verificador	")
 @Getter
 @Setter
 @NoArgsConstructor

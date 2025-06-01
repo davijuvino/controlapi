@@ -73,20 +73,51 @@ CREATE TABLE recurso (
     nome VARCHAR(255)
 );
 
-ALTER TABLE despesas
-    ADD CONSTRAINT FK_despesas_usuarios FOREIGN KEY (usuario_id) REFERENCES usuarios;
 
-ALTER TABLE npl_perfil_permissao
-    ADD CONSTRAINT FK_permissao_perfil FOREIGN KEY (perfil_id) REFERENCES npl_perfil,
-    ADD CONSTRAINT FK_permissao_recurso FOREIGN KEY (recurso_id) REFERENCES recurso;
+-- Padrão fk_[tabelaorigem]_[tabeladestino]
 
-ALTER TABLE npl_perfil_usuario
-    ADD CONSTRAINT FK_perfil_usuario FOREIGN KEY (perfil_id) REFERENCES npl_perfil,
-    ADD CONSTRAINT FK_usuario_perfil FOREIGN KEY (usuario_id) REFERENCES usuarios;
 
-ALTER TABLE npl_usuario_verificador
-    ADD CONSTRAINT FK_verificador_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios;
+-- Adiciona FK entre despesas e usuarios
+ALTER TABLE IF EXISTS despesas
+ADD CONSTRAINT fk_despesas_usuario
+FOREIGN KEY (usuario_id)
+REFERENCES usuarios;
 
-ALTER TABLE produto
-    ADD CONSTRAINT FK_produto_despesa FOREIGN KEY (despesa_id) REFERENCES despesas;
+-- Adiciona FK entre npl_perfil_permissao e npl_perfil (perfil_id)
+ALTER TABLE IF EXISTS npl_perfil_permissao
+ADD CONSTRAINT fk_perfilpermissao_perfil
+FOREIGN KEY (perfil_id)
+REFERENCES npl_perfil;
+
+-- Adiciona FK entre npl_perfil_permissao e recurso (recurso_id)
+ALTER TABLE IF EXISTS npl_perfil_permissao
+ADD CONSTRAINT fk_perfilpermissao_recurso
+FOREIGN KEY (recurso_id)
+REFERENCES recurso;
+
+-- Adiciona FK entre npl_perfil_usuario e npl_perfil (perfil_id)
+ALTER TABLE IF EXISTS npl_perfil_usuario
+ADD CONSTRAINT fk_perfilusuario_perfil
+FOREIGN KEY (perfil_id)
+REFERENCES npl_perfil;
+
+-- Adiciona FK entre npl_perfil_usuario e usuarios (usuario_id)
+ALTER TABLE IF EXISTS npl_perfil_usuario
+ADD CONSTRAINT fk_perfilusuario_usuario
+FOREIGN KEY (usuario_id)
+REFERENCES usuarios;
+
+-- Adiciona FK entre npl_usuario_verificador e usuarios (usuario_id)
+ALTER TABLE IF EXISTS npl_usuario_verificador
+ADD CONSTRAINT fk_verificador_usuario
+FOREIGN KEY (usuario_id)
+REFERENCES usuarios;
+
+-- Adiciona FK entre produto e despesas (despesa_id)
+ALTER TABLE IF EXISTS produto
+ADD CONSTRAINT fk_produto_despesa
+FOREIGN KEY (despesa_id)
+REFERENCES despesas;;
+
+
 

@@ -33,11 +33,11 @@ public class RecursoServices {
             }
             Recurso recurso = new Recurso(recursoDTO);
             Recurso savedRecurso = RecursoRepository.save(recurso);
-            logger.info(Mensagem.INFO_SUCESSO_CRIAR, savedRecurso.getId());
+            logger.info(Mensagem.CRIAR_OK, savedRecurso.getId());
             return new RecursoDto(savedRecurso);
         } catch (Exception e) {
-            logger.error(Mensagem.INFO_ERRO_CRIAR, e.getMessage());
-            throw new CriacaoException(String.format(Mensagem.INFO_ERRO_CRIAR, e.getMessage()));
+            logger.error(Mensagem.CRIAR_NOK, e.getMessage());
+            throw new CriacaoException(String.format(Mensagem.CRIAR_NOK, e.getMessage()));
         }
     }
 
@@ -56,11 +56,11 @@ public class RecursoServices {
         return RecursoRepository.findById(recursoId).map(resource -> {
             try {
                 BeanUtils.copyProperties(recursoDto, resource, "id");
-                logger.info(Mensagem.INFO_SUCESSO_ATUALIZAR, resource.getId());
+                logger.info(Mensagem.ATUALIZAR_OK, resource.getId());
                 return new RecursoDto(RecursoRepository.save(resource));
             } catch (Exception e) {
-                logger.error(Mensagem.INFO_ERRO_ATUALIZAR, e.getMessage());
-                throw new CriacaoException(String.format(Mensagem.INFO_ERRO_ATUALIZAR, e.getMessage()));
+                logger.error(Mensagem.ATUALIZAR_NOK, e.getMessage());
+                throw new CriacaoException(String.format(Mensagem.ATUALIZAR_NOK, e.getMessage()));
             }
 
         }).orElseThrow(() -> new NaoEncontradoException(String.format(Mensagem.INFO_NAO_ENCONTRADO, recursoId)));
@@ -69,7 +69,7 @@ public class RecursoServices {
     public String deletarRecurso(Long recursoId) {
         return RecursoRepository.findById(recursoId).map(resource -> {
             RecursoRepository.deleteById(recursoId);
-            return Mensagem.INFO_SUCESSO_DELETE;
+            return Mensagem.DELETE_OK;
         }).orElseThrow(() -> new NaoEncontradoException(String.format(Mensagem.INFO_NAO_ENCONTRADO, recursoId)));
     }
 }

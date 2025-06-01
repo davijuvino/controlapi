@@ -124,7 +124,7 @@ public class UsuariosRecursoServicesTest {
 
         String result = recursoServices.deletarRecurso(1L);
 
-        assertEquals(Mensagem.INFO_SUCESSO_DELETE, result);
+        assertEquals(Mensagem.DELETE_OK, result);
         verify(RecursoRepository, times(1)).findById(1L);
         verify(RecursoRepository, times(1)).deleteById(1L);
     }
