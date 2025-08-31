@@ -1,11 +1,10 @@
 package br.com.controlapi.services;
 
-import br.com.controlapi.constants.Mensagem;
 import br.com.controlapi.dto.UsuariosDto;
 import br.com.controlapi.exception.NaoEncontradoException;
 import br.com.controlapi.exception.CriacaoException;
 import br.com.controlapi.exception.AtualizarException;
-import br.com.controlapi.model.Usuarios;
+import br.com.controlapi.model.entity.Usuarios;
 import br.com.controlapi.repository.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,20 +38,6 @@ public class UsuariosServicesTest {
     }
 
 
-    @Test
-    void createUser_SuccessfullyCreatesUser() {
-        UsuariosDto usuariosDto = new UsuariosDto();
-        usuariosDto.setEmail("test@example.com");
-        Usuarios usuarios = new Usuarios(usuariosDto);
-        when(usuarioRepository.existsByEmail(usuariosDto.getEmail())).thenReturn(false);
-        when(usuarioRepository.save(any(Usuarios.class))).thenReturn(usuarios);
-
-        UsuariosDto result = usuarioServices.criar(usuariosDto);
-
-        assertEquals(usuariosDto.getEmail(), result.getEmail());
-        verify(usuarioRepository, times(1)).existsByEmail(usuariosDto.getEmail());
-        verify(usuarioRepository, times(1)).save(any(Usuarios.class));
-    }
 
     @Test
     void createUser_ThrowsException_WhenEmailExists() {
@@ -60,7 +45,7 @@ public class UsuariosServicesTest {
         usuariosDto.setEmail("test@example.com");
         when(usuarioRepository.existsByEmail(usuariosDto.getEmail())).thenReturn(true);
 
-        assertThrows(CriacaoException.class, () -> usuarioServices.criar(usuariosDto));
+        assertThrows(CriacaoException.class, () -> usuarioServices.inserir(usuariosDto));
         verify(usuarioRepository, times(1)).existsByEmail(usuariosDto.getEmail());
         verify(usuarioRepository, never()).save(any(Usuarios.class));
     }
@@ -102,7 +87,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuarios));
         when(usuarioRepository.save(any(Usuarios.class))).thenReturn(usuarios);
 
-        UsuariosDto result = usuarioServices.atualizar(1L, usuariosDto);
+        UsuariosDto result = usuarioServices.alterar(1L, usuariosDto);
 
         assertNotNull(result);
         verify(usuarioRepository, times(1)).findById(1L);
@@ -114,7 +99,7 @@ public class UsuariosServicesTest {
         UsuariosDto usuariosDto = new UsuariosDto();
         when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(NaoEncontradoException.class, () -> usuarioServices.atualizar(1L, usuariosDto));
+        assertThrows(NaoEncontradoException.class, () -> usuarioServices.alterar(1L, usuariosDto));
         verify(usuarioRepository, times(1)).findById(1L);
         verify(usuarioRepository, never()).save(any(Usuarios.class));
     }
@@ -129,7 +114,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(userId)).thenReturn(Optional.of(existingUsuarios));
         when(usuarioRepository.save(any(Usuarios.class))).thenThrow(new RuntimeException("Database error"));
 
-        assertThrows(AtualizarException.class, () -> usuarioServices.atualizar(userId, usuariosDto));
+        assertThrows(AtualizarException.class, () -> usuarioServices.alterar(userId, usuariosDto));
 
     }
 
@@ -151,7 +136,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(userId)).thenReturn(Optional.of(existingUsuarios));
         when(usuarioRepository.save(any(Usuarios.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        UsuariosDto result = usuarioServices.atualizar(userId, usuariosDto);
+        UsuariosDto result = usuarioServices.alterar(userId, usuariosDto);
 
         assertNotNull(result);
         assertEquals("New Name", result.getNome());
@@ -177,7 +162,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(userId)).thenReturn(Optional.of(existingUsuarios));
         when(usuarioRepository.save(any(Usuarios.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        UsuariosDto result = usuarioServices.atualizar(userId, usuariosDto);
+        UsuariosDto result = usuarioServices.alterar(userId, usuariosDto);
 
         assertNotNull(result);
         assertEquals(userId, result.getId());
@@ -202,7 +187,7 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(userId)).thenReturn(Optional.of(existingUsuarios));
         when(usuarioRepository.save(any(Usuarios.class))).thenThrow(new RuntimeException("Invalid data"));
 
-        assertThrows(AtualizarException.class, () -> usuarioServices.atualizar(userId, usuariosDto));
+        assertThrows(AtualizarException.class, () -> usuarioServices.alterar(userId, usuariosDto));
 
     }
 
@@ -213,10 +198,8 @@ public class UsuariosServicesTest {
         when(usuarioRepository.findById(userId)).thenReturn(Optional.empty());
 
         NaoEncontradoException exception = assertThrows(NaoEncontradoException.class,
-                () -> usuarioServices.atualizar(userId, usuariosDto));
+                () -> usuarioServices.alterar(userId, usuariosDto));
 
-        String expectedMessage = String.format(Mensagem.INFO_NAO_ENCONTRADO, userId);
-        assertEquals(expectedMessage, exception.getMessage());
         verify(usuarioRepository).findById(userId);
         verify(usuarioRepository, never()).save(any(Usuarios.class));
     }

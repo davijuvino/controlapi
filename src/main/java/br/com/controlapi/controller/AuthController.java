@@ -1,17 +1,15 @@
 package br.com.controlapi.controller;
 
-import java.util.List;
-
+import br.com.controlapi.dto.AuthenticationDTO;
 import br.com.controlapi.dto.UsuarioDTO;
+import br.com.controlapi.service.AuthService;
 import br.com.controlapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,32 +17,29 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(value = "/usuarios")
+@RequestMapping("/auth")
 @CrossOrigin
-public class UsuarioController {
+public class AuthController {
 
+	@Autowired
+	private AuthService authService;
+	
 	@Autowired
 	private UsuarioService usuarioService;
 	
-	@GetMapping
-	public List<UsuarioDTO> listarTodos(){
-		return usuarioService.listarTodos();
-	}
-
-	@PostMapping
-	public void inserir(@RequestBody UsuarioDTO usuario) {
-		usuarioService.inserir(usuario);
+	@PostMapping(value = "/login")
+	public ResponseEntity<?> login(@RequestBody AuthenticationDTO authDto){
+		return ResponseEntity.ok(authService.login(authDto));
 	}
 	
-	@PutMapping
-	public UsuarioDTO alterar(@RequestBody UsuarioDTO usuario) {
-		return usuarioService.alterar(usuario);
+	@PostMapping(value = "/novoUsuario")
+	public void inserirNovoUsuario(@RequestBody UsuarioDTO novoUsuario){
+		usuarioService.inserirNovoUsuario(novoUsuario);
 	}
 	
-	//http://endereco/usuario/3
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluir(@PathVariable("id") Long id){
-		usuarioService.excluir(id);
-		return ResponseEntity.ok().build();
+	@GetMapping(value = "/verificarCadastro/{uuid}")
+	public String verificarCadastro(@PathVariable("uuid") String uuid) {
+		return usuarioService.verificarCadastro(uuid);
 	}
+	
 }

@@ -1,9 +1,9 @@
 package br.com.controlapi.repository;
 
+import br.com.controlapi.entity.PerfilUsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.com.controlapi.model.PerfilUsuario;
 
-public interface PerfilUsuarioRepository extends JpaRepository<PerfilUsuario, Long>{
+public interface PerfilUsuarioRepository extends JpaRepository<PerfilUsuarioEntity, Long>{
 
 }

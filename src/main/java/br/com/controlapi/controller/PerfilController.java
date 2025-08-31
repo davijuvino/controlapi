@@ -2,8 +2,8 @@ package br.com.controlapi.controller;
 
 import java.util.List;
 
-import br.com.controlapi.dto.UsuarioDTO;
-import br.com.controlapi.service.UsuarioService;
+import br.com.controlapi.dto.PerfilDTO;
+import br.com.controlapi.service.PerfilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,34 +17,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 @RestController
-@RequestMapping(value = "/usuarios")
+@RequestMapping(value = "/perfil")
 @CrossOrigin
-public class UsuarioController {
+public class PerfilController {
 
 	@Autowired
-	private UsuarioService usuarioService;
+	private PerfilService perfilService;
 	
 	@GetMapping
-	public List<UsuarioDTO> listarTodos(){
-		return usuarioService.listarTodos();
+	public List<PerfilDTO> listarTodos(){
+		return perfilService.listarTodos();
 	}
-
+	
 	@PostMapping
-	public void inserir(@RequestBody UsuarioDTO usuario) {
-		usuarioService.inserir(usuario);
+	public void inserir(@RequestBody PerfilDTO perfil) {
+		perfilService.inserir(perfil);
 	}
 	
 	@PutMapping
-	public UsuarioDTO alterar(@RequestBody UsuarioDTO usuario) {
-		return usuarioService.alterar(usuario);
+	public PerfilDTO alterar(@RequestBody PerfilDTO perfil) {
+		return perfilService.alterar(perfil);
 	}
 	
-	//http://endereco/usuario/3
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluir(@PathVariable("id") Long id){
-		usuarioService.excluir(id);
+	public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
+		perfilService.excluir(id);
 		return ResponseEntity.ok().build();
 	}
 }

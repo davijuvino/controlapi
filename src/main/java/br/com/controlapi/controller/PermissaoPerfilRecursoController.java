@@ -2,8 +2,8 @@ package br.com.controlapi.controller;
 
 import java.util.List;
 
-import br.com.controlapi.dto.UsuarioDTO;
-import br.com.controlapi.service.UsuarioService;
+import br.com.controlapi.dto.PermissaoPerfilRecursoDTO;
+import br.com.controlapi.service.PermissaoPerfilRecursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,32 +19,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(value = "/usuarios")
+@RequestMapping(value = "/permissao-perfil-recurso")
 @CrossOrigin
-public class UsuarioController {
+public class PermissaoPerfilRecursoController {
 
 	@Autowired
-	private UsuarioService usuarioService;
+	private PermissaoPerfilRecursoService permissaoPerfilRecursoService;
 	
 	@GetMapping
-	public List<UsuarioDTO> listarTodos(){
-		return usuarioService.listarTodos();
+	public List<PermissaoPerfilRecursoDTO> listarTodos(){
+		return permissaoPerfilRecursoService.listarTodos();
 	}
-
+	
 	@PostMapping
-	public void inserir(@RequestBody UsuarioDTO usuario) {
-		usuarioService.inserir(usuario);
+	public void inserir(@RequestBody PermissaoPerfilRecursoDTO permissaoPerfilRecurso) {
+		permissaoPerfilRecursoService.inserir(permissaoPerfilRecurso);
 	}
 	
 	@PutMapping
-	public UsuarioDTO alterar(@RequestBody UsuarioDTO usuario) {
-		return usuarioService.alterar(usuario);
+	public PermissaoPerfilRecursoDTO alterar(@RequestBody PermissaoPerfilRecursoDTO permissaoPerfilRecurso) {
+		return permissaoPerfilRecursoService.alterar(permissaoPerfilRecurso);
 	}
 	
-	//http://endereco/usuario/3
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluir(@PathVariable("id") Long id){
-		usuarioService.excluir(id);
+	public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
+		permissaoPerfilRecursoService.excluir(id);
 		return ResponseEntity.ok().build();
 	}
 }

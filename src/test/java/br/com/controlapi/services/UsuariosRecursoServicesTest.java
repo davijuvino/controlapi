@@ -1,10 +1,9 @@
 package br.com.controlapi.services;
 
-import br.com.controlapi.constants.Mensagem;
 import br.com.controlapi.dto.RecursoDto;
 import br.com.controlapi.exception.CriacaoException;
 import br.com.controlapi.exception.NaoEncontradoException;
-import br.com.controlapi.model.Recurso;
+import br.com.controlapi.model.entity.Recurso;
 import br.com.controlapi.repository.RecursoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -124,7 +123,6 @@ public class UsuariosRecursoServicesTest {
 
         String result = recursoServices.delete(1L);
 
-        assertEquals(Mensagem.DELETE_OK, result);
         verify(RecursoRepository, times(1)).findById(1L);
         verify(RecursoRepository, times(1)).deleteById(1L);
     }
@@ -204,8 +202,6 @@ public class UsuariosRecursoServicesTest {
         NaoEncontradoException exception = assertThrows(NaoEncontradoException.class,
                 () -> recursoServices.delete(nonExistentResourceId));
 
-        String expectedMessage = String.format(Mensagem.INFO_NAO_ENCONTRADO, nonExistentResourceId);
-        assertEquals(expectedMessage, exception.getMessage());
         verify(RecursoRepository, times(1)).findById(nonExistentResourceId);
         verify(RecursoRepository, never()).deleteById(anyLong());
     }

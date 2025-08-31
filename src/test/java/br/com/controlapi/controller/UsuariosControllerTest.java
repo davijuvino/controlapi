@@ -56,24 +56,24 @@ public class UsuariosControllerTest {
     @Test
     void createUser_ReturnsCreatedUser() {
         UsuariosDto user = new UsuariosDto();
-        when(usuarioServices.criar(user)).thenReturn(user);
+        when(usuarioServices.inserir(user)).thenReturn(user);
 
         ResponseEntity<UsuariosDto> response = usuarioController.criar(user);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(user, response.getBody());
-        verify(usuarioServices, times(1)).criar(user);
+        verify(usuarioServices, times(1)).inserir(user);
     }
 
     @Test
     void updateUser_ReturnsUpdatedUser() {
         UsuariosDto user = new UsuariosDto();
-        when(usuarioServices.atualizar(1L, user)).thenReturn(user);
+        when(usuarioServices.alterar(1L, user)).thenReturn(user);
 
         ResponseEntity<UsuariosDto> response = usuarioController.atualizar(1L, user);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(user, response.getBody());
-        verify(usuarioServices, times(1)).atualizar(1L, user);
+        verify(usuarioServices, times(1)).alterar(1L, user);
     }
 }
