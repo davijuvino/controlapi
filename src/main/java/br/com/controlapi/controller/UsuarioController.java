@@ -2,20 +2,16 @@ package br.com.controlapi.controller;
 
 import java.util.List;
 
+import br.com.controlapi.dto.PaginacaoDTO;
 import br.com.controlapi.dto.UsuarioDTO;
 import br.com.controlapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -25,10 +21,17 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioService usuarioService;
-	
+
 	@GetMapping
-	public List<UsuarioDTO> listarTodos(){
-		return usuarioService.listarTodos();
+	public ResponseEntity<PaginacaoDTO<UsuarioDTO>> listarTodos(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size,
+			@RequestParam(defaultValue = "nome") String sort) {
+
+		Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+		PaginacaoDTO<UsuarioDTO> resultado = usuarioService.listarTodos(pageable);
+
+		return ResponseEntity.ok(resultado);
 	}
 
 	@PostMapping
