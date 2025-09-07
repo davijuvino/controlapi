@@ -3,7 +3,7 @@ package br.com.controlapi.service;
 import java.util.List;
 
 import br.com.controlapi.dto.PerfilDTO;
-import br.com.controlapi.entity.PerfilEntity;
+import br.com.controlapi.entity.Perfil;
 import br.com.controlapi.repository.PerfilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,22 +17,22 @@ public class PerfilService {
 	private PerfilRepository perfilRepository;
 	
 	public List<PerfilDTO> listarTodos(){
-		List<PerfilEntity> perfis = perfilRepository.findAll();
+		List<Perfil> perfis = perfilRepository.findAll();
 		return perfis.stream().map(PerfilDTO::new).toList();
 	}
 	
 	public void inserir(PerfilDTO perfil) {
-		PerfilEntity perfilEntity = new PerfilEntity(perfil);
+		Perfil perfilEntity = new Perfil(perfil);
 		perfilRepository.save(perfilEntity);
 	}
 	
 	public PerfilDTO alterar(PerfilDTO perfil) {
-		PerfilEntity perfilEntity = new PerfilEntity(perfil);
+		Perfil perfilEntity = new Perfil(perfil);
 		return new PerfilDTO(perfilRepository.save(perfilEntity));
 	}
 	
 	public void excluir(Long id) {
-		PerfilEntity perfil = perfilRepository.findById(id).get();
+		Perfil perfil = perfilRepository.findById(id).get();
 		perfilRepository.delete(perfil);
 	}
 	

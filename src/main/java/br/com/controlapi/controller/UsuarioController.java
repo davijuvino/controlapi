@@ -1,12 +1,10 @@
 package br.com.controlapi.controller;
 
-import java.util.List;
 
 import br.com.controlapi.dto.PaginacaoDTO;
 import br.com.controlapi.dto.UsuarioDTO;
 import br.com.controlapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -39,12 +37,12 @@ public class UsuarioController {
 		usuarioService.inserir(usuario);
 	}
 	
-	@PutMapping
-	public UsuarioDTO alterar(@RequestBody UsuarioDTO usuario) {
-		return usuarioService.alterar(usuario);
+	@PutMapping("/{id}")
+	public UsuarioDTO alterar(@RequestBody UsuarioDTO usuario, @PathVariable("id") Long id) {
+		return usuarioService.alterar(usuario, id);
 	}
-	
-	//http://endereco/usuario/3
+
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> excluir(@PathVariable("id") Long id){
 		usuarioService.excluir(id);

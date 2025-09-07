@@ -1,6 +1,6 @@
 package br.com.controlapi.dto;
 
-import br.com.controlapi.entity.PermissaoPerfilRecursoEntity;
+import br.com.controlapi.entity.PermissaoPerfilRecurso;
 import org.springframework.beans.BeanUtils;
 
 import lombok.Getter;
@@ -16,7 +16,7 @@ public class PermissaoPerfilRecursoDTO {
 	private PerfilDTO perfil;	
 	private RecursoDTO recurso;
 	
-	public PermissaoPerfilRecursoDTO(PermissaoPerfilRecursoEntity permissaoPerfilRecurso) {
+	public PermissaoPerfilRecursoDTO(PermissaoPerfilRecurso permissaoPerfilRecurso) {
 		BeanUtils.copyProperties(permissaoPerfilRecurso, this);
 		if(permissaoPerfilRecurso != null && permissaoPerfilRecurso.getRecurso() != null) {
 			this.recurso = new RecursoDTO(permissaoPerfilRecurso.getRecurso());

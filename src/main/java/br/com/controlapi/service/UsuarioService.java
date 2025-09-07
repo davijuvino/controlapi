@@ -1,21 +1,18 @@
 package br.com.controlapi.service;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 import br.com.controlapi.dto.PaginacaoDTO;
 import br.com.controlapi.dto.UsuarioDTO;
-import br.com.controlapi.entity.UsuarioEntity;
-import br.com.controlapi.entity.UsuarioVerificadorEntity;
+import br.com.controlapi.entity.Usuario;
+import br.com.controlapi.entity.UsuarioVerificador;
 import br.com.controlapi.entity.enums.TipoSituacaoUsuario;
 import br.com.controlapi.repository.UsuarioRepository;
 import br.com.controlapi.repository.UsuarioVerificadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,22 +43,22 @@ public class UsuarioService {
 	}
 
 	@Transactional
-	public void inserir(UsuarioDTO usuario) {
-		UsuarioEntity usuarioEntity = criarUsuarioEntity(usuario);
-		usuarioRepository.save(usuarioEntity);
+	public void inserir(UsuarioDTO dto) {
+		Usuario usuario = criarUsuarioEntity(dto);
+		usuarioRepository.save(usuario);
 	}
 
 	@Transactional
-	public void inserirNovoUsuario(UsuarioDTO usuario) {
-		UsuarioEntity usuarioEntity = criarUsuarioEntity(usuario);
-		usuarioEntity.setSituacao(TipoSituacaoUsuario.PENDENTE);
-		usuarioRepository.save(usuarioEntity);
+	public void inserirNovoUsuario(UsuarioDTO dto) {
+		Usuario usuario = criarUsuarioEntity(dto);
+		usuario.setSituacao(TipoSituacaoUsuario.PENDENTE);
+		usuarioRepository.save(usuario);
 
-		UsuarioVerificadorEntity verificador = criarUsuarioVerificador(usuarioEntity);
+		UsuarioVerificador verificador = criarUsuarioVerificador(usuario);
 		usuarioVerificadorRepository.save(verificador);
 
 		emailService.enviarEmailTexto(
-				usuario.getEmail(),
+				dto.getEmail(),
 				"Novo usuário cadastrado",
 				"Você está recebendo um email de cadastro. O número para validação é: " + verificador.getUuid()
 		);
@@ -69,14 +66,14 @@ public class UsuarioService {
 
 	@Transactional
 	public String verificarCadastro(String uuid) {
-		return usuarioVerificadorRepository.findByUuid(UUID.fromString(uuid))
+		return usuarioVerificadorRepository.findByUuid(uuid)
 				.map(verificador -> {
 					if (verificador.getDataExpiracao().isBefore(Instant.now())) {
 						usuarioVerificadorRepository.delete(verificador);
 						return "Tempo de verificação expirado";
 					}
 
-					UsuarioEntity usuario = verificador.getUsuario();
+					Usuario usuario = verificador.getUsuario();
 					usuario.setSituacao(TipoSituacaoUsuario.ATIVO);
 					usuarioRepository.save(usuario);
 
@@ -85,17 +82,29 @@ public class UsuarioService {
 	}
 
 	@Transactional
-	public UsuarioDTO alterar(UsuarioDTO usuario) {
-		UsuarioEntity usuarioEntity = criarUsuarioEntity(usuario);
-		return new UsuarioDTO(usuarioRepository.save(usuarioEntity));
-	}
+	public UsuarioDTO alterar(UsuarioDTO dto, Long id) {
+		usuarioRepository.findById(id).ifPresentOrElse(
+				usuarioAtualizar -> {
+					usuarioAtualizar.setNome(dto.getNome());
+					usuarioAtualizar.setEmail(dto.getEmail());
+					if (dto.getSenha() != null && !dto.getSenha().isEmpty()) {
+						usuarioAtualizar.setSenha(passwordEncoder.encode(dto.getSenha()));
+					}
+					usuarioRepository.save(usuarioAtualizar);
+				}, () -> {
+					throw new IllegalArgumentException("Usuário não encontrado com o ID: " + id);
+				}
+		);
+		dto.setId(id);
+        return dto;
+    }
 
 	@Transactional
 	public void excluir(Long id) {
-		usuarioRepository.findById(id)
-				.ifPresentOrElse(usuarioRepository::delete,	() -> {
-							throw new IllegalArgumentException("Usuário não encontrado com o ID: " + id);
-						}
+		usuarioRepository.findById(id).ifPresentOrElse(
+				usuarioRepository::delete,	() -> {
+					throw new IllegalArgumentException("Usuário não encontrado com o ID: " + id);
+					}
 				);
 	}
 
@@ -106,16 +115,16 @@ public class UsuarioService {
 				.orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com o ID: " + id));
 	}
 
-	private UsuarioEntity criarUsuarioEntity(UsuarioDTO usuario) {
-		UsuarioEntity usuarioEntity = new UsuarioEntity(usuario);
-		usuarioEntity.setSenha(passwordEncoder.encode(usuario.getSenha()));
-		return usuarioEntity;
+	private Usuario criarUsuarioEntity(UsuarioDTO dto) {
+		Usuario usuario = new Usuario(dto);
+		usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
+		return usuario;
 	}
 
-	private UsuarioVerificadorEntity criarUsuarioVerificador(UsuarioEntity usuarioEntity) {
-		UsuarioVerificadorEntity verificador = new UsuarioVerificadorEntity();
-		verificador.setUsuario(usuarioEntity);
-		verificador.setUuid(UUID.randomUUID());
+	private UsuarioVerificador criarUsuarioVerificador(Usuario usuario) {
+		UsuarioVerificador verificador = new UsuarioVerificador();
+		verificador.setUsuario(usuario);
+		verificador.setUuid(UUID.randomUUID().toString());
 		verificador.setDataExpiracao(Instant.now().plusMillis(900000));
 		return verificador;
 	}

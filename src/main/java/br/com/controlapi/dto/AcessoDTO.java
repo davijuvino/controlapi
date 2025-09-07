@@ -1,12 +1,12 @@
 package br.com.controlapi.dto;
 
-public class AcessDTO {
+public class AcessoDTO {
 
 	private String token;
 
 	//TODO implementar retornar o usuario e liberacoes (authorities)
 	
-	public AcessDTO(String token) {
+	public AcessoDTO(String token) {
 		super();
 		this.token = token;
 	}

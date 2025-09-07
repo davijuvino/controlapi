@@ -1,6 +1,6 @@
 package br.com.controlapi.dto;
 
-import br.com.controlapi.entity.PerfilUsuarioEntity;
+import br.com.controlapi.entity.PerfilUsuario;
 import org.springframework.beans.BeanUtils;
 
 
@@ -17,7 +17,7 @@ public class PerfilUsuarioDTO {
 	private UsuarioDTO usuario;
 	private PerfilDTO perfil;
 	
-	public PerfilUsuarioDTO(PerfilUsuarioEntity perfilUsuario) {
+	public PerfilUsuarioDTO(PerfilUsuario perfilUsuario) {
 		BeanUtils.copyProperties(perfilUsuario, this);
 		if(perfilUsuario != null && perfilUsuario.getUsuario() != null) {
 			this.usuario = new UsuarioDTO(perfilUsuario.getUsuario());

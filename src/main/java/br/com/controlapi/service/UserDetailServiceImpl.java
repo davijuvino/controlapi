@@ -1,6 +1,6 @@
 package br.com.controlapi.service;
 
-import br.com.controlapi.entity.UsuarioEntity;
+import br.com.controlapi.entity.Usuario;
 import br.com.controlapi.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +18,7 @@ public class UserDetailServiceImpl implements UserDetailsService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UsuarioEntity usuario = usuarioRepository.findByLogin(username).get();
+		Usuario usuario = usuarioRepository.findByLogin(username).get();
 		return UserDetailsImpl.build(usuario);
 	}
 

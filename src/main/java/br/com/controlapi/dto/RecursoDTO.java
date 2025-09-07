@@ -2,7 +2,7 @@ package br.com.controlapi.dto;
 
 import java.util.Objects;
 
-import br.com.controlapi.entity.RecursoEntity;
+import br.com.controlapi.entity.Recurso;
 import org.springframework.beans.BeanUtils;
 
 
@@ -16,7 +16,7 @@ public class RecursoDTO {
 		
 	}
 	
-	public RecursoDTO(RecursoEntity recurso) {
+	public RecursoDTO(Recurso recurso) {
 		BeanUtils.copyProperties(recurso, this);
 	}
 	

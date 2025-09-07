@@ -3,7 +3,7 @@ package br.com.controlapi.service;
 import java.util.List;
 
 import br.com.controlapi.dto.PerfilUsuarioDTO;
-import br.com.controlapi.entity.PerfilUsuarioEntity;
+import br.com.controlapi.entity.PerfilUsuario;
 import br.com.controlapi.repository.PerfilUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,22 +17,22 @@ public class PerfilUsuarioService {
 	private PerfilUsuarioRepository perfilUsuarioRepository;
 	
 	public List<PerfilUsuarioDTO> listarTodos(){
-		List<PerfilUsuarioEntity> perfilUsuarios = perfilUsuarioRepository.findAll();
+		List<PerfilUsuario> perfilUsuarios = perfilUsuarioRepository.findAll();
 		return perfilUsuarios.stream().map(PerfilUsuarioDTO::new).toList();
 	}
 	
 	public void inserir(PerfilUsuarioDTO perfilUsuario) {
-		PerfilUsuarioEntity perfilUsuarioEntity = new PerfilUsuarioEntity(perfilUsuario);
+		PerfilUsuario perfilUsuarioEntity = new PerfilUsuario(perfilUsuario);
 		perfilUsuarioRepository.save(perfilUsuarioEntity);
 	}
 	
 	public PerfilUsuarioDTO alterar(PerfilUsuarioDTO perfilUsuario) {
-		PerfilUsuarioEntity perfilUsuarioEntity = new PerfilUsuarioEntity(perfilUsuario);
+		PerfilUsuario perfilUsuarioEntity = new PerfilUsuario(perfilUsuario);
 		return new PerfilUsuarioDTO(perfilUsuarioRepository.save(perfilUsuarioEntity));
 	}
 	
 	public void excluir(Long id) {
-		PerfilUsuarioEntity recurso = perfilUsuarioRepository.findById(id).get();
+		PerfilUsuario recurso = perfilUsuarioRepository.findById(id).get();
 		perfilUsuarioRepository.delete(recurso);
 	}
 	

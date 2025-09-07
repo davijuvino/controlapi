@@ -21,7 +21,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class PerfilEntity {
+public class Perfil {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,7 +30,7 @@ public class PerfilEntity {
 	@Column(nullable = false)
 	private String descricao;
 	
-	public PerfilEntity(PerfilDTO perfil) {
+	public Perfil(PerfilDTO perfil) {
 		BeanUtils.copyProperties(perfil, this);
 	}
 }

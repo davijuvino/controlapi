@@ -3,7 +3,7 @@ package br.com.controlapi.service;
 import java.util.List;
 
 import br.com.controlapi.dto.PermissaoPerfilRecursoDTO;
-import br.com.controlapi.entity.PermissaoPerfilRecursoEntity;
+import br.com.controlapi.entity.PermissaoPerfilRecurso;
 import br.com.controlapi.repository.PermissaoPerfilRecursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,22 +17,22 @@ public class PermissaoPerfilRecursoService {
 	private PermissaoPerfilRecursoRepository permissaoPerfilRecursoRepository;
 	
 	public List<PermissaoPerfilRecursoDTO> listarTodos(){
-		List<PermissaoPerfilRecursoEntity> permissaoPerfilRecusos = permissaoPerfilRecursoRepository.findAll();
+		List<PermissaoPerfilRecurso> permissaoPerfilRecusos = permissaoPerfilRecursoRepository.findAll();
 		return permissaoPerfilRecusos.stream().map(PermissaoPerfilRecursoDTO::new).toList();
 	}
 	
 	public void inserir(PermissaoPerfilRecursoDTO permissaoPerfilRecurso) {
-		PermissaoPerfilRecursoEntity permissaoPerfilRecursoEntity = new PermissaoPerfilRecursoEntity(permissaoPerfilRecurso);
+		PermissaoPerfilRecurso permissaoPerfilRecursoEntity = new PermissaoPerfilRecurso(permissaoPerfilRecurso);
 		permissaoPerfilRecursoRepository.save(permissaoPerfilRecursoEntity);
 	}
 	
 	public PermissaoPerfilRecursoDTO alterar(PermissaoPerfilRecursoDTO permissaoPerfilRecurso) {
-		PermissaoPerfilRecursoEntity permissaoPerfilRecursoEntity = new PermissaoPerfilRecursoEntity(permissaoPerfilRecurso);
+		PermissaoPerfilRecurso permissaoPerfilRecursoEntity = new PermissaoPerfilRecurso(permissaoPerfilRecurso);
 		return new PermissaoPerfilRecursoDTO(permissaoPerfilRecursoRepository.save(permissaoPerfilRecursoEntity));
 	}
 	
 	public void excluir(Long id) {
-		PermissaoPerfilRecursoEntity permissaoPerfilRecurso = permissaoPerfilRecursoRepository.findById(id).get();
+		PermissaoPerfilRecurso permissaoPerfilRecurso = permissaoPerfilRecursoRepository.findById(id).get();
 		permissaoPerfilRecursoRepository.delete(permissaoPerfilRecurso);
 	}
 	

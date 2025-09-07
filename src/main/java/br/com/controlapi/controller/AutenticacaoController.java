@@ -1,8 +1,8 @@
 package br.com.controlapi.controller;
 
-import br.com.controlapi.dto.AuthenticationDTO;
+import br.com.controlapi.dto.AutenticacaoDTO;
 import br.com.controlapi.dto.UsuarioDTO;
-import br.com.controlapi.service.AuthService;
+import br.com.controlapi.service.AutenticacaoService;
 import br.com.controlapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,19 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/autenticacao")
 @CrossOrigin
-public class AuthController {
+public class AutenticacaoController {
 
 	@Autowired
-	private AuthService authService;
+	private AutenticacaoService autenticacaoService;
 	
 	@Autowired
 	private UsuarioService usuarioService;
 	
 	@PostMapping(value = "/login")
-	public ResponseEntity<?> login(@RequestBody AuthenticationDTO authDto){
-		return ResponseEntity.ok(authService.login(authDto));
+	public ResponseEntity<?> login(@RequestBody AutenticacaoDTO authDto){
+		return ResponseEntity.ok(autenticacaoService.login(authDto));
 	}
 	
 	@PostMapping(value = "/novoUsuario")

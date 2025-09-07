@@ -21,7 +21,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class PermissaoPerfilRecursoEntity {
+public class PermissaoPerfilRecurso {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,19 +29,19 @@ public class PermissaoPerfilRecursoEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_PERFIL")
-	private PerfilEntity perfil;
+	private Perfil perfil;
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_RECURSO")
-	private RecursoEntity recurso;
+	private Recurso recurso;
 	
-	public PermissaoPerfilRecursoEntity(PermissaoPerfilRecursoDTO permissaoPerfilRecurso) {
+	public PermissaoPerfilRecurso(PermissaoPerfilRecursoDTO permissaoPerfilRecurso) {
 		BeanUtils.copyProperties(permissaoPerfilRecurso, this);
 		if(permissaoPerfilRecurso != null && permissaoPerfilRecurso.getRecurso() != null) {
-			this.recurso = new RecursoEntity(permissaoPerfilRecurso.getRecurso());
+			this.recurso = new Recurso(permissaoPerfilRecurso.getRecurso());
 		}
 		if(permissaoPerfilRecurso != null && permissaoPerfilRecurso.getPerfil() != null) {
-			this.perfil = new PerfilEntity(permissaoPerfilRecurso.getPerfil());
+			this.perfil = new Perfil(permissaoPerfilRecurso.getPerfil());
 		}	
 	}
 }

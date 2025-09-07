@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "NPL_USUARIO")
-public class UsuarioEntity {
+public class Usuario {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,11 +40,11 @@ public class UsuarioEntity {
 	@Column(nullable = false)
 	private TipoSituacaoUsuario situacao;
 	
-	public UsuarioEntity(UsuarioDTO usuario) {
+	public Usuario(UsuarioDTO usuario) {
 		BeanUtils.copyProperties(usuario, this);
 	}
 	
-	public UsuarioEntity() {
+	public Usuario() {
 		
 	}
 	
@@ -109,7 +109,7 @@ public class UsuarioEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UsuarioEntity other = (UsuarioEntity) obj;
+		Usuario other = (Usuario) obj;
 		return Objects.equals(id, other.id);
 	}	
 }

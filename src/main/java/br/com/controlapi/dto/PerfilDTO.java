@@ -1,6 +1,6 @@
 package br.com.controlapi.dto;
 
-import br.com.controlapi.entity.PerfilEntity;
+import br.com.controlapi.entity.Perfil;
 import org.springframework.beans.BeanUtils;
 
 
@@ -16,7 +16,7 @@ public class PerfilDTO {
 	private Long id;
 	private String descricao;
 	
-	public PerfilDTO(PerfilEntity perfil) {
+	public PerfilDTO(Perfil perfil) {
 		BeanUtils.copyProperties(perfil, this);
 	}
 }

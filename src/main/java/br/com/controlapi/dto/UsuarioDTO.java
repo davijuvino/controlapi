@@ -1,6 +1,6 @@
 package br.com.controlapi.dto;
 
-import br.com.controlapi.entity.UsuarioEntity;
+import br.com.controlapi.entity.Usuario;
 import br.com.controlapi.entity.enums.TipoSituacaoUsuario;
 import org.springframework.beans.BeanUtils;
 
@@ -15,7 +15,7 @@ public class UsuarioDTO {
 	private String email;
 	private TipoSituacaoUsuario situacao;
 	
-	public UsuarioDTO(UsuarioEntity usuario) {
+	public UsuarioDTO(Usuario usuario) {
 		BeanUtils.copyProperties(usuario, this);
 	}
 	

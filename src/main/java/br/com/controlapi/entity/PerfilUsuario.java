@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PerfilUsuarioEntity {
+public class PerfilUsuario {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,19 +27,19 @@ public class PerfilUsuarioEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_USUARIO")
-	private UsuarioEntity usuario;
+	private Usuario usuario;
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_PERFIL")
-	private PerfilEntity perfil;
+	private Perfil perfil;
 	
-	public PerfilUsuarioEntity(PerfilUsuarioDTO perfilUsuario) {
+	public PerfilUsuario(PerfilUsuarioDTO perfilUsuario) {
 		BeanUtils.copyProperties(perfilUsuario, this);
 		if(perfilUsuario != null && perfilUsuario.getUsuario() != null) {
-			this.usuario = new UsuarioEntity(perfilUsuario.getUsuario());
+			this.usuario = new Usuario(perfilUsuario.getUsuario());
 		}
 		if(perfilUsuario != null && perfilUsuario.getPerfil() != null) {
-			this.perfil = new PerfilEntity(perfilUsuario.getPerfil());
+			this.perfil = new Perfil(perfilUsuario.getPerfil());
 		}	
 	}
 	

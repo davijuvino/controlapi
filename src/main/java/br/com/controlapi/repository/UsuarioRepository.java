@@ -2,11 +2,11 @@ package br.com.controlapi.repository;
 
 import java.util.Optional;
 
-import br.com.controlapi.entity.UsuarioEntity;
+import br.com.controlapi.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long>{
+public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
-	Optional<UsuarioEntity> findByLogin(String login);
+	Optional<Usuario> findByLogin(String login);
 }

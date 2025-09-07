@@ -1,7 +1,6 @@
 package br.com.controlapi.entity;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,19 +21,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class UsuarioVerificadorEntity {
+public class UsuarioVerificador {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column(nullable = false)
-	private UUID uuid;
+	private String uuid;
 	
 	@Column(nullable = false)
 	private Instant dataExpiracao;
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID", unique = true)
-	private UsuarioEntity usuario;
+	private Usuario usuario;
 }

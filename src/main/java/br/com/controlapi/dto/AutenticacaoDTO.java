@@ -1,6 +1,6 @@
 package br.com.controlapi.dto;
 
-public class AuthenticationDTO {
+public class AutenticacaoDTO {
 
 	private String username;
 	private String password;

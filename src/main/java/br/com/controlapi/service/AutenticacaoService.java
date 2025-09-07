@@ -1,7 +1,7 @@
 package br.com.controlapi.service;
 
-import br.com.controlapi.dto.AcessDTO;
-import br.com.controlapi.dto.AuthenticationDTO;
+import br.com.controlapi.dto.AcessoDTO;
+import br.com.controlapi.dto.AutenticacaoDTO;
 import br.com.controlapi.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class AuthService {
+public class AutenticacaoService {
 
 	@Autowired
 	private AuthenticationManager authenticatioManager;
@@ -21,7 +21,7 @@ public class AuthService {
 	@Autowired
 	private JwtUtils jwtUtils;
 	
-	public AcessDTO login(AuthenticationDTO authDto) {
+	public AcessoDTO login(AutenticacaoDTO authDto) {
 		
 		try {
 		//Cria mecanismo de credencial para o spring
@@ -36,13 +36,13 @@ public class AuthService {
 		
 		String token = jwtUtils.generateTokenFromUserDetailsImpl(userAuthenticate);
 		
-		AcessDTO accessDto = new AcessDTO(token);
+		AcessoDTO accessDto = new AcessoDTO(token);
 		
 		return accessDto;
 		
 		}catch(BadCredentialsException e) {
 			//TODO LOGIN OU SENHA INVALIDO
 		}
-		return new AcessDTO("Acesso negado");
+		return new AcessoDTO("Acesso negado");
 	}
 }

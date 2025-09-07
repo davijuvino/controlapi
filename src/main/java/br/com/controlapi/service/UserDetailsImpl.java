@@ -3,7 +3,7 @@ package br.com.controlapi.service;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import br.com.controlapi.entity.UsuarioEntity;
+import br.com.controlapi.entity.Usuario;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -33,7 +33,7 @@ public class UserDetailsImpl implements UserDetails{
 		this.authorities = authorities;
 	}
 
-	public static UserDetailsImpl build(UsuarioEntity usuario) {
+	public static UserDetailsImpl build(Usuario usuario) {
 		
 		return new UserDetailsImpl(
 				usuario.getId(), 
