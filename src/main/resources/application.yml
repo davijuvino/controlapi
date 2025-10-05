@@ -1,0 +1,103 @@
+springdoc:
+  swagger-ui:
+    auth:
+      client-id: control-web
+    oauth:
+      client-secret: web123
+      use-pkce-with-authorization-code-grant: true
+      use-basic-authentication-with-access-code-grant: true
+  oAuthFlow:
+    authorizationUrl: http://127.0.0.1:8080/oauth2/authorize
+    tokenUrl: http://127.0.0.1:8080/oauth2/token
+management:
+    endpoints:
+        web:
+            base-path: /management
+            exposure:
+                include: ["configprops", "env", "health", "info", "threaddump"]
+    endpoint:
+        health:
+            show-details: when_authorized
+    info:
+        git:
+            mode: full
+    health:
+        mail:
+            enabled: false # When using the MailService, configure an SMTP server and set this to true
+    metrics:
+        enabled: false # http://micrometer.io/ is disabled by default, as we use http://metrics.dropwizard.io/ instead
+
+spring:
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: davijsouza32@gmail.com
+        password: sua-senha
+        protocol: smtp
+        default-encoding: UTF-8
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+                    writetimeout: 5000
+                    timeout: 5000
+                    connectiontimeout: 5000
+                    pool:
+                        size: 10
+    application:
+        name: store
+    jpa:
+        open-in-view: false
+        hibernate:
+            ddl-auto: none
+            naming:
+                implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    messages:
+        basename: i18n/messages
+    mvc:
+        favicon:
+            enabled: false
+    thymeleaf:
+        mode: HTML
+    cloud:
+        circuitbreaker:
+            resilience4j:
+                enabled: true
+        loadbalancer:
+            enabled: true
+            retry:
+                enabled: false
+
+server:
+    servlet:
+        session:
+            cookie:
+                http-only: true
+
+# Properties to be exposed on the /info management endpoint
+info:
+    # Comma separated list of profiles that will trigger the ribbon to show
+    display-ribbon-on-profiles: "dev"
+
+
+
+# ===================================================================
+# Configuração Básica do Resilience4j
+# ===================================================================
+resilience4j:
+    circuitbreaker:
+        instances:
+            default:
+                sliding-window-type: COUNT_BASED
+                sliding-window-size: 10
+                minimum-number-of-calls: 5
+                failure-rate-threshold: 50
+                wait-duration-in-open-state: 10s
+                permitted-number-of-calls-in-half-open-state: 3
+
+    timelimiter:
+        instances:
+            default:
+                timeout-duration: 5s

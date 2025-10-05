@@ -1,131 +1,92 @@
 package br.com.controlapi.service;
 
-import java.time.Instant;
-import java.util.UUID;
 
-import br.com.controlapi.dto.PaginacaoDTO;
-import br.com.controlapi.dto.UsuarioDTO;
-import br.com.controlapi.entity.Usuario;
-import br.com.controlapi.entity.UsuarioVerificador;
-import br.com.controlapi.entity.enums.TipoSituacaoUsuario;
+import br.com.controlapi.model.dto.UsuarioDTO;
+import br.com.controlapi.model.entity.Autorizacoes;
+import br.com.controlapi.model.entity.Usuario;
+import br.com.controlapi.model.exception.EmailAlreadyEmUsoException;
+import br.com.controlapi.model.exception.LoginAlreadyEmUsoException;
+import br.com.controlapi.repository.AutorizacoesRepository;
 import br.com.controlapi.repository.UsuarioRepository;
-import br.com.controlapi.repository.UsuarioVerificadorRepository;
+import br.com.controlapi.security.AutorizacoesConstantes;
+import br.com.controlapi.service.util.RandomUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
+@Transactional
 public class UsuarioService {
 
+	private final Logger log = LoggerFactory.getLogger(UsuarioService.class);
+
 	private final UsuarioRepository usuarioRepository;
-	private final UsuarioVerificadorRepository usuarioVerificadorRepository;
+	private final AutorizacoesRepository autorizacoesRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final EmailService emailService;
+	private final CacheManager cacheManager;
 
 	@Autowired
-	public UsuarioService(UsuarioRepository usuarioRepository,
-						  UsuarioVerificadorRepository usuarioVerificadorRepository,
-						  PasswordEncoder passwordEncoder,
-						  EmailService emailService) {
+	public UsuarioService(UsuarioRepository usuarioRepository, AutorizacoesRepository autorizacoesRepository,
+                          PasswordEncoder passwordEncoder,
+                          EmailService emailService, CacheManager cacheManager) {
 		this.usuarioRepository = usuarioRepository;
-		this.usuarioVerificadorRepository = usuarioVerificadorRepository;
-		this.passwordEncoder = passwordEncoder;
+        this.autorizacoesRepository = autorizacoesRepository;
+        this.passwordEncoder = passwordEncoder;
 		this.emailService = emailService;
-	}
-
-	@Transactional(readOnly = true)
-	public PaginacaoDTO<UsuarioDTO> listarTodos(Pageable pageable) {
-		Page<UsuarioDTO> page = usuarioRepository.findAll(pageable).map(UsuarioDTO::new);
-		return new PaginacaoDTO<>(page);
-	}
-
-	@Transactional
-	public void inserir(UsuarioDTO dto) {
-		Usuario usuario = criarUsuarioEntity(dto);
-		usuarioRepository.save(usuario);
-	}
-
-	@Transactional
-	public void inserirNovoUsuario(UsuarioDTO dto) {
-		Usuario usuario = criarUsuarioEntity(dto);
-		usuario.setSituacao(TipoSituacaoUsuario.PENDENTE);
-		usuarioRepository.save(usuario);
-
-		UsuarioVerificador verificador = criarUsuarioVerificador(usuario);
-		usuarioVerificadorRepository.save(verificador);
-
-		emailService.enviarEmailTexto(
-				dto.getEmail(),
-				"Novo usuário cadastrado",
-				"Você está recebendo um email de cadastro. O número para validação é: " + verificador.getUuid()
-		);
-	}
-
-	@Transactional
-	public String verificarCadastro(String uuid) {
-		return usuarioVerificadorRepository.findByUuid(uuid)
-				.map(verificador -> {
-					if (verificador.getDataExpiracao().isBefore(Instant.now())) {
-						usuarioVerificadorRepository.delete(verificador);
-						return "Tempo de verificação expirado";
-					}
-
-					Usuario usuario = verificador.getUsuario();
-					usuario.setSituacao(TipoSituacaoUsuario.ATIVO);
-					usuarioRepository.save(usuario);
-
-					return "Usuário Verificado";
-				}).orElse("Usuário não verificado");
-	}
-
-	@Transactional
-	public UsuarioDTO alterar(UsuarioDTO dto, Long id) {
-		usuarioRepository.findById(id).ifPresentOrElse(
-				usuarioAtualizar -> {
-					usuarioAtualizar.setNome(dto.getNome());
-					usuarioAtualizar.setEmail(dto.getEmail());
-					if (dto.getSenha() != null && !dto.getSenha().isEmpty()) {
-						usuarioAtualizar.setSenha(passwordEncoder.encode(dto.getSenha()));
-					}
-					usuarioRepository.save(usuarioAtualizar);
-				}, () -> {
-					throw new IllegalArgumentException("Usuário não encontrado com o ID: " + id);
-				}
-		);
-		dto.setId(id);
-        return dto;
+        this.cacheManager = cacheManager;
     }
 
-	@Transactional
-	public void excluir(Long id) {
-		usuarioRepository.findById(id).ifPresentOrElse(
-				usuarioRepository::delete,	() -> {
-					throw new IllegalArgumentException("Usuário não encontrado com o ID: " + id);
-					}
-				);
-	}
+    public Usuario registrarUsuario(UsuarioDTO usuarioDTO, String senha) {
+		usuarioRepository.findOneByLogin(usuarioDTO.getLogin().toLowerCase()).ifPresent(existeUsuario -> {
+			if (!existeUsuario.isAtivado()) {
+				usuarioRepository.delete(existeUsuario);
+				this.limpaUsuarioCaches(existeUsuario);
+			} else {
+				throw new LoginAlreadyEmUsoException();
+			}
+		});
+		usuarioRepository.findOneByEmailIgnoreCase(usuarioDTO.getEmail()).ifPresent(existeUsuario -> {
+			if (!existeUsuario.isAtivado()) {
+				usuarioRepository.delete(existeUsuario);
+				usuarioRepository.flush();
+				this.limpaUsuarioCaches(existeUsuario);
+			} else {
+				throw new EmailAlreadyEmUsoException();
+			}
+		});
+		Usuario novoUsuario = new Usuario();
+		String senhaCriptografada = passwordEncoder.encode(senha);
+		novoUsuario.setLogin(usuarioDTO.getLogin().toLowerCase());
+		// ao inicialiar o novo usuario, gerar a senha criptografada
+		novoUsuario.setSenha(senhaCriptografada);
+		novoUsuario.setPrimeiroNome(usuarioDTO.getPrimeiroNome());
+		novoUsuario.setUltimoNome(usuarioDTO.getUltimoNome());
+		novoUsuario.setEmail(usuarioDTO.getEmail().toLowerCase());
+		novoUsuario.setLangChave(usuarioDTO.getLangChave());
+		// novo usuario nao esta ativado
+		novoUsuario.setAtivado(false);
+		// novo usuario registrar a chave
+		novoUsuario.setAtivandoChave(RandomUtil.generateActivationKey());
+		Set<Autorizacoes> autorizacoes = new HashSet<>();
+		autorizacoesRepository.findById(AutorizacoesConstantes.USUARIO).ifPresent(autorizacoes::add);
+		novoUsuario.setAuthorities(autorizacoes);
+		usuarioRepository.save(novoUsuario);
+		this.limpaUsuarioCaches(novoUsuario);
+		log.debug("Criar informações para usuario: {}", novoUsuario);
+		return novoUsuario;
+    }
 
-	@Transactional(readOnly = true)
-	public UsuarioDTO buscarPorId(Long id) {
-		return usuarioRepository.findById(id)
-				.map(UsuarioDTO::new)
-				.orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com o ID: " + id));
-	}
-
-	private Usuario criarUsuarioEntity(UsuarioDTO dto) {
-		Usuario usuario = new Usuario(dto);
-		usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
-		return usuario;
-	}
-
-	private UsuarioVerificador criarUsuarioVerificador(Usuario usuario) {
-		UsuarioVerificador verificador = new UsuarioVerificador();
-		verificador.setUsuario(usuario);
-		verificador.setUuid(UUID.randomUUID().toString());
-		verificador.setDataExpiracao(Instant.now().plusMillis(900000));
-		return verificador;
+	private void limpaUsuarioCaches(Usuario usuario) {
+		Objects.requireNonNull(cacheManager.getCache(UsuarioRepository.USUARIOS_BY_LOGIN_CACHE)).evict(usuario.getLogin());
+		Objects.requireNonNull(cacheManager.getCache(UsuarioRepository.USUARIOS_BY_EMAIL_CACHE)).evict(usuario.getEmail());
 	}
 }
