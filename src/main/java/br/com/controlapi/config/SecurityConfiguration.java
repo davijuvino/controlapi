@@ -1,6 +1,6 @@
 package br.com.controlapi.config;
 
-import br.com.controlapi.security.AutorizacoesConstantes;
+import br.com.controlapi.security.AuthorityConstants;
 import br.com.controlapi.security.SecurityProblemSupport;
 import br.com.controlapi.security.jwt.JWTConfigurer;
 import br.com.controlapi.security.jwt.TokenProvider;
@@ -101,14 +101,14 @@ public class SecurityConfiguration {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/registrar").permitAll()
-                        .requestMatchers("/api/activate").permitAll()
+                        .requestMatchers("/api/ativar").permitAll()
                         .requestMatchers("/api/authenticate").permitAll()
                         .requestMatchers("/api/account/reset-password/init").permitAll()
                         .requestMatchers("/api/account/reset-password/finish").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/management/health").permitAll()
                         .requestMatchers("/management/info").permitAll()
-                        .requestMatchers("/management/**").hasAuthority(AutorizacoesConstantes.ADMIN)
+                        .requestMatchers("/management/**").hasAuthority(AuthorityConstants.ADMIN)
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsService)

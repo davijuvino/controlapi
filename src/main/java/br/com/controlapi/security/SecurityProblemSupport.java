@@ -23,6 +23,6 @@ public class SecurityProblemSupport implements AuthenticationEntryPoint, AccessD
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
+        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Acesso negado");
     }
 }

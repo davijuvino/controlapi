@@ -3,7 +3,7 @@ package br.com.controlapi.security;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class AutorizacoesConstantes {
+public class AuthorityConstants {
 
     public static final String ADMIN = "ROLE_ADMIN";
     public static final String USUARIO = "ROLE_USUARIO";

@@ -1,7 +1,7 @@
 package br.com.controlapi.config;
 
 
-public class Constantes {
+public class Constants {
 
     // Regex for acceptable logins
     public static final String LOGIN_REGEX = "^[_.@A-Za-z0-9-]*$";
@@ -10,6 +10,6 @@ public class Constantes {
     public static final String ANONYMOUS_USER = "anonymoususer";
     public static final String DEFAULT_LANGUAGE = "pt_BR";
 
-    private Constantes() {
+    private Constants() {
     }
 }

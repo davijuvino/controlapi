@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.Locale;
 
-import br.com.controlapi.model.entity.Usuario;
+import br.com.controlapi.model.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
@@ -70,21 +70,21 @@ public class EmailService {
         }
     }
 
-    public void sendEmailFromTemplate(Usuario usuario, String templateName, String titleKey) {
-        if (usuario.getEmail() == null) {
-            log.warn("Email address is null for user {}", usuario.getLogin());
+    public void sendEmailFromTemplate(User user, String templateName, String titleKey) {
+        if (user.getEmail() == null) {
+            log.warn("Email address is null for user {}", user.getLogin());
             return;
         }
 
-        Locale locale = Locale.forLanguageTag(usuario.getLangChave() != null ? usuario.getLangChave() : "pt");
+        Locale locale = Locale.forLanguageTag(user.getLangKey() != null ? user.getLangKey() : "pt");
         Context context = new Context(locale);
-        context.setVariable(USUARIO, usuario);
+        context.setVariable(USUARIO, user);
         context.setVariable(BASE_URL, getBaseUrl());
         context.setVariable(DATA_EVENTO, ZonedDateTime.now());
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
 
-        sendEmail(usuario.getEmail(), subject, content, false, true);
+        sendEmail(user.getEmail(), subject, content, false, true);
     }
 
     private String getBaseUrl() {
@@ -94,20 +94,20 @@ public class EmailService {
     }
 
     @Async("emailExecutor")
-    public void enviarEmailDeAtivacao(Usuario usuario) {
-        log.debug("Sending activation email to '{}'", usuario.getEmail());
-        sendEmailFromTemplate(usuario, "mail/activationEmail", "email.activation.title");
+    public void enviarEmailDeAtivacao(User user) {
+        log.debug("Sending activation email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
     }
 
     @Async("emailExecutor")
-    public void sendCreationEmail(Usuario usuario) {
-        log.debug("Sending creation email to '{}'", usuario.getEmail());
-        sendEmailFromTemplate(usuario, "mail/creationEmail", "email.activation.title");
+    public void sendCreationEmail(User user) {
+        log.debug("Sending creation email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user, "mail/creationEmail", "email.activation.title");
     }
 
     @Async("emailExecutor")
-    public void sendPasswordResetMail(Usuario usuario) {
-        log.debug("Sending password reset email to '{}'", usuario.getEmail());
-        sendEmailFromTemplate(usuario, "mail/passwordResetEmail", "email.reset.title");
+    public void sendPasswordResetMail(User user) {
+        log.debug("Sending password reset email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
     }
 }

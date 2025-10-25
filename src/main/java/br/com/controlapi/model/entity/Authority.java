@@ -13,21 +13,23 @@ import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
 @ToString
-@Table(name = "npl_autorizacoes")
+@Table(name = "npl_authority")
 @Getter
 @Setter
 @EqualsAndHashCode
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Autorizacoes implements Serializable {
+public class Authority implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @NotNull
     @Size(max = 50)
     @Id
     @Column(length = 50)
-    private String nome;
+    private String name;
 }

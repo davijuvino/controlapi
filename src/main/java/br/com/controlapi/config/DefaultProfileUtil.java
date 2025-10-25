@@ -15,7 +15,7 @@ public final class DefaultProfileUtil {
 
     private static final String SPRING_PROFILE_DEFAULT = "spring.profiles.default";
 
-    // Constantes de perfis (substituindo as do JHipster)
+    // Constants de perfis (substituindo as do JHipster)
     public static final String SPRING_PROFILE_DEVELOPMENT = "dev";
     public static final String SPRING_PROFILE_TEST = "test";
     public static final String SPRING_PROFILE_PRODUCTION = "prod";

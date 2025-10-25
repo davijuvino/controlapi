@@ -55,7 +55,8 @@
               <p th:if="${dataEvento}">Data do evento: <span th:text="${#temporals.format(dataEvento, 'dd/MM/yyyy HH:mm')}"></span>
               </p>
               <div>
-                  <a th:href="@{|${baseUrl}/#/activate?key=${u.ativandoChave}|}" class="button" th:text="@{|${baseUrl}/#/activate?key=${u.ativandoChave}|}">Link de Ativação</a>
+                  <a th:href="@{|${baseUrl}/#/ativar?chave=${u.activationKey}|}" class="button"
+                     th:text="@{|${baseUrl}/#/ativar?chave=${u.activationKey}|}">Link de Ativação</a>
               </div>
               <div>
                   <p>

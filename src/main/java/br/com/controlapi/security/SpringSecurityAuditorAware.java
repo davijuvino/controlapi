@@ -3,7 +3,7 @@ package br.com.controlapi.security;
 
 import java.util.Optional;
 
-import br.com.controlapi.config.Constantes;
+import br.com.controlapi.config.Constants;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +15,6 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
 
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of(SecurityUtils.getCurrentUserLogin().orElse(Constantes.SYSTEM_ACCOUNT));
+        return Optional.of(SecurityUtils.getCurrentUserLogin().orElse(Constants.SYSTEM_ACCOUNT));
     }
 }

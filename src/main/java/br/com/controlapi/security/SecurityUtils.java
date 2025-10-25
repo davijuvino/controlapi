@@ -53,7 +53,7 @@ public final class SecurityUtils {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(securityContext.getAuthentication())
             .map(authentication -> authentication.getAuthorities().stream()
-                .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(AutorizacoesConstantes.ANONYMOUS)))
+                .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(AuthorityConstants.ANONYMOUS)))
             .orElse(false);
     }
 

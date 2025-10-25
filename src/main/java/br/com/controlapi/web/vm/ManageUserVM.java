@@ -1,6 +1,6 @@
 package br.com.controlapi.web.vm;
 
-import br.com.controlapi.model.dto.UsuarioDTO;
+import br.com.controlapi.model.dto.UserDTO;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,18 +9,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class GerenciarUsuarioVM extends UsuarioDTO {
+public class ManageUserVM extends UserDTO {
 
-    public static final int SENHA_MIN_LENGTH = 4;
+    public static final int PASSWORD_MIN_LENGTH = 4;
 
-    public static final int SENHA_MAX_LENGTH = 100;
+    public static final int PASSWORD_MAX_LENGTH = 100;
 
-    @Size(min = SENHA_MIN_LENGTH, max = SENHA_MAX_LENGTH)
+    @Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
     private String senha;
 
     @Override
     public String toString() {
-        return "GerenciarUsuarioVM{" +
+        return "ManageUserVM{" +
                 "} " + super.toString();
     }
 

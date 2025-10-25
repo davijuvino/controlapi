@@ -1,12 +1,13 @@
 package br.com.controlapi.model.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-import br.com.controlapi.config.Constantes;
-import br.com.controlapi.model.dto.UsuarioDTO;
+import br.com.controlapi.config.Constants;
+import br.com.controlapi.model.dto.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -25,10 +26,11 @@ import org.springframework.beans.BeanUtils;
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
-@Table(name = "NPL_USUARIO")
+@Table(name = "npl_user")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Usuario extends AbstractAuditoriaEntity implements Serializable {
+public class User extends AbstractAuditoriaEntity implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -36,7 +38,7 @@ public class Usuario extends AbstractAuditoriaEntity implements Serializable {
 	private Long id;
 
 	@NotNull
-	@Pattern(regexp = Constantes.LOGIN_REGEX)
+	@Pattern(regexp = Constants.LOGIN_REGEX)
 	@Size(min = 1, max = 50)
 	@Column(length = 50, unique = true, nullable = false)
 	private String login;
@@ -44,16 +46,16 @@ public class Usuario extends AbstractAuditoriaEntity implements Serializable {
 	@JsonIgnore
 	@NotNull
 	@Size(min = 60, max = 60)
-	@Column(name = "senha_hash", length = 60, nullable = false)
-	private String senha;
+	@Column(name = "password_hash", length = 60, nullable = false)
+	private String password;
 
 	@Size(max = 50)
-	@Column(name = "primeiro_nome", length = 50)
-	private String primeiroNome;
+	@Column(name = "first_name", length = 50)
+	private String firstName;
 
 	@Size(max = 50)
-	@Column(name = "ultimo_nome", length = 50)
-	private String ultimoNome;
+	@Column(name = "last_name", length = 50)
+	private String lastName;
 
 	@Email
 	@Size(min = 5, max = 254)
@@ -62,37 +64,37 @@ public class Usuario extends AbstractAuditoriaEntity implements Serializable {
 
 	@NotNull
 	@Column(nullable = false)
-	private boolean ativado = false;
+	private boolean activated = false;
 
 	@Size(min = 2, max = 6)
-	@Column(name = "lang_chave", length = 6)
-	private String langChave;
+	@Column(name = "lang_key", length = 6)
+	private String langKey;
 
 	@Size(max = 20)
-	@Column(name = "ativando_chave", length = 20)
+	@Column(name = "activation_key", length = 20)
 	@JsonIgnore
-	private String ativandoChave;
+	private String activationKey;
 
 	@Size(max = 20)
-	@Column(name = "resetar_chave", length = 20)
+	@Column(name = "reset_key", length = 20)
 	@JsonIgnore
-	private String resetarChave;
+	private String resetKey;
 
-	@Column(name = "resetar_data")
-	private Instant resetarData = null;
+	@Column(name = "reset_date")
+	private Instant resetDate = null;
 
 
 	@JsonIgnore
 	@ManyToMany
 	@JoinTable(
-			name = "npl_usuario_autorizacoes",
-			joinColumns = {@JoinColumn(name = "usuario_id", referencedColumnName = "id")},
-			inverseJoinColumns = {@JoinColumn(name = "autorizacoes_nome", referencedColumnName = "nome")})
+			name = "npl_user_authority",
+			joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+			inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	@BatchSize(size = 20)
-	private Set<Autorizacoes> authorities = new HashSet<>();
+	private Set<Authority> authorities = new HashSet<>();
 	
-	public Usuario(UsuarioDTO usuario) {
-		BeanUtils.copyProperties(usuario, this);
+	public User(UserDTO user) {
+		BeanUtils.copyProperties(user, this);
 	}
 }

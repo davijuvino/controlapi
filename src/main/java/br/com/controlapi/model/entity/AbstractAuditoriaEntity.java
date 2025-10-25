@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import jakarta.persistence.Column;
@@ -28,26 +29,27 @@ import jakarta.persistence.MappedSuperclass;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractAuditoriaEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @CreatedBy
-    @Column(name = "criado_por", nullable = false, length = 50, updatable = false)
+    @Column(name = "created_by", nullable = false, length = 50, updatable = false)
     @JsonIgnore
-    private String criadoPor;
+    private String createdBy;
 
     @CreatedDate
-    @Column(name = "criado_data", nullable = false, updatable = false)
+    @Column(name = "created_date", nullable = false, updatable = false)
     @JsonIgnore
-    private Instant criadoData = Instant.now();
+    private Instant createdDate = Instant.now();
 
     @LastModifiedBy
-    @Column(name = "ultima_modificacao_por", length = 50)
+    @Column(name = "last_modified_by", length = 50)
     @JsonIgnore
-    private String ultimaModificacaoPor;
+    private String lastModifiedBy;
 
     @LastModifiedDate
-    @Column(name = "ultima_modificacao_data")
+    @Column(name = "last_modified_date")
     @JsonIgnore
-    private Instant ultimaModificacaoData = Instant.now();
+    private Instant lastModifiedDate = Instant.now();
 
 }
