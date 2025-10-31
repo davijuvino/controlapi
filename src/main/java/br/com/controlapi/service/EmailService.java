@@ -7,6 +7,7 @@ import java.util.Locale;
 import br.com.controlapi.model.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -36,6 +37,9 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final MessageSource messageSource;
     private final SpringTemplateEngine templateEngine;
+
+    @Value("${spring.mail.baseurl}")
+    private String baseUrl;
 
     public EmailService(
             MailProperties mailProperties,
@@ -79,6 +83,8 @@ public class EmailService {
         Locale locale = Locale.forLanguageTag(user.getLangKey() != null ? user.getLangKey() : "pt");
         Context context = new Context(locale);
         context.setVariable(USUARIO, user);
+        // Also expose the variable name `user` because some templates expect `${user}`
+        context.setVariable("user", user);
         context.setVariable(BASE_URL, getBaseUrl());
         context.setVariable(DATA_EVENTO, ZonedDateTime.now());
         String content = templateEngine.process(templateName, context);
@@ -88,9 +94,7 @@ public class EmailService {
     }
 
     private String getBaseUrl() {
-        // Você pode configurar isso nas propriedades do Spring
-        // Por exemplo: spring.mail.base-url=http://localhost:8080
-        return mailProperties.getProperties().getOrDefault("base-url", "http://localhost:8080");
+        return mailProperties.getProperties().getOrDefault("base-url", baseUrl);
     }
 
     @Async("emailExecutor")

@@ -64,7 +64,7 @@ public class AccountController implements AccountOpenApi {
     public void activateAccount(@RequestParam(value = "chave") String key) {
         Optional<User> user = userService.activateRegistration(key);
         if (user.isEmpty()) {
-            throw new UserNotFoundException("User não foi encontrado para ativar esta key");
+            throw new UserNotFoundException("Chave não encontrado para ativar este Usuario.");
         }
     }
 

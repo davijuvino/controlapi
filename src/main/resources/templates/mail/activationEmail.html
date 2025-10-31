@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="">
      <head>
-         <title th:text="#{{email.activation.title}}">JHipster activation</title>
+         <title th:text="#{email.activation.title}">JHipster activation</title>
          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
          <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
@@ -50,13 +50,13 @@
               <h1 th:text="#{email.activation.title}">Sistema de Controle Financeiro</h1>
           </div>
           <div class="content">
-              <p>Olá, <strong th:text="#{email.activation.greeting(${u.login})}">Usuário</strong>! </p>
+              <p>Olá, <strong th:text="#{email.activation.greeting(${user.login})}">Usuário</strong>! </p>
               <p th:text="#{email.activation.text1}">Esta é uma mensagem de ativação.</p>
               <p th:if="${dataEvento}">Data do evento: <span th:text="${#temporals.format(dataEvento, 'dd/MM/yyyy HH:mm')}"></span>
               </p>
               <div>
-                  <a th:href="@{|${baseUrl}/#/ativar?chave=${u.activationKey}|}" class="button"
-                     th:text="@{|${baseUrl}/#/ativar?chave=${u.activationKey}|}">Link de Ativação</a>
+                  <a th:href="@{|${baseUrl}/api/ativar?chave=${user.activationKey}|}" class="button"
+                     th:text="@{|${baseUrl}/api/ativar?chave=${user.activationKey}|}">Link de Ativação</a>
               </div>
               <div>
                   <p>
@@ -68,7 +68,7 @@
           </div>
           <div class="footer">
               <p>Este é um e-mail automático, por favor não responda.</p>
-              <p th:text="'Enviado em: ' + ${#temporals.format(dataEnvio, 'dd/MM/yyyy HH:mm')}"></p>
+              <p th:text="'Enviado em: ' + ${#temporals.format(dataEvento, 'dd/MM/yyyy HH:mm')}"></p>
           </div>
      </body>
 </html>

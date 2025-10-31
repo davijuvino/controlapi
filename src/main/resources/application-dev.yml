@@ -49,6 +49,8 @@ spring:
         port: 587
         username: davidevelopment2026@gmail.com
         password: anylwuuppberkvnn
+        baseurl: http://localhost:8080
+
     messages:
         cache-duration: PT1S # 1 second, see the ISO 8601 standard
     thymeleaf:
