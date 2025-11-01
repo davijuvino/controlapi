@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/favicon.ico}" />
+    <title>Operação Concluída</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --success-color: #10b981;
+            --success-light: #ecfdf5;
+            --success-dark: #059669;
+            --warning-color: #f59e0b;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--gray-700);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .success-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .success-header {
+            background: linear-gradient(135deg, var(--success-color), var(--success-dark));
+            color: white;
+            padding: 20px 18px 18px;
+            position: relative;
+        }
+
+        .success-icon {
+            font-size: 2.5rem;
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 14px;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: successScale 0.6s ease-in-out;
+        }
+
+        .success-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .success-header p {
+            font-size: 1rem;
+            opacity: 0.95;
+            font-weight: 400;
+            margin: 0;
+        }
+
+        .success-content {
+            padding: 30px;
+        }
+
+        .success-message {
+            background: var(--success-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .success-message h3 {
+            font-size: 1.3rem;
+            color: var(--success-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .success-details {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .success-details h4 {
+            font-size: 1.1rem;
+            color: var(--gray-800);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .success-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .success-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .success-item:last-child {
+            border-bottom: none;
+        }
+
+        .success-label {
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+
+        .success-value {
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .next-steps {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .next-steps h4 {
+            font-size: 1.1rem;
+            color: var(--gray-800);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .steps-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .steps-list li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gray-600);
+        }
+
+        .steps-list li i {
+            color: var(--success-color);
+            font-size: 0.9rem;
+        }
+
+        .success-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--success-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .success-footer {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-200);
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes successScale {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes checkmark {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .success-container {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .fa-check {
+            animation: checkmark 0.5s ease-in-out;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), var(--success-dark));
+            border-radius: 3px;
+            width: 100%;
+            animation: progressFill 2s ease-in-out;
+        }
+
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        /* Responsive */
+        @media (max-width: 576px) {
+            .success-container {
+                max-width: 100%;
+            }
+
+            .success-header {
+                padding: 30px 20px 20px;
+            }
+
+            .success-header h1 {
+                font-size: 2rem;
+            }
+
+            .success-content {
+                padding: 20px;
+            }
+
+            .success-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="success-container">
+    <div class="success-header">
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <h1 th:text="${successTitle ?: 'Sucesso!'}">Operação Concluída</h1>
+        <p th:text="${successMessage ?: 'Sua solicitação foi processada com sucesso.'}">
+        </p>
+    </div>
+
+    <div class="success-content">
+        <div class="success-message">
+            <h3><i class="fas fa-check-circle"></i>
+                <span th:text="${confirmationMessage ?: 'Processo finalizado com êxito'}">
+                        Tudo certo!
+                    </span>
+            </h3>
+            <p th:text="${details ?: 'Sua solicitação foi processada e está completa.'}">
+                A conta foi ativada no sistema e processados corretamente.
+            </p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+
+        <!-- Detalhes da operação (opcional) -->
+        <div class="success-details" th:if="${operationDetails}">
+            <h4><i class="fas fa-info-circle"></i> Detalhes da Operação</h4>
+            <div class="success-info">
+                <div class="success-item">
+                    <span class="success-label">Data/Hora:</span>
+                    <span class="success-value" th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}">
+                            Data e hora
+                        </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Próximos passos -->
+        <div class="next-steps">
+            <h4><i class="fas fa-road"></i> Próximos Passos</h4>
+            <ul class="steps-list">
+                <li><i class="fas fa-check"></i> Acessar a pagina inicial e realizar o login</li>
+                <li><i class="fas fa-check"></i> Status da conta ativa</li>
+            </ul>
+        </div>
+
+        <div class="success-actions">
+            <a th:href="${redirectUrl ?: '/'}" class="btn btn-primary">
+                <i class="fas fa-home"></i> Página Inicial
+            </a>
+        </div>
+
+        <div class="success-footer">
+            <p>Precisa de ajuda? <a href="mailto:support@example.com" style="color: var(--success-color);">Entre em contato conosco</a></p>
+            <p style="font-size: 0.8rem; margin-top: 10px; color: var(--gray-400);">
+                Referência: <span th:text="${reference ?: 'N/A'}">REF-12345</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Efeito de confetti simulado
+        const successIcon = document.querySelector('.success-icon');
+        successIcon.style.animation = 'successScale 0.6s ease-in-out';
+
+        // Adiciona pequeno delay para a barra de progresso
+        setTimeout(() => {
+            document.querySelector('.progress-bar').style.animation = 'progressFill 2s ease-in-out';
+        }, 500);
+    });
+</script>
+</body>
+</html>
