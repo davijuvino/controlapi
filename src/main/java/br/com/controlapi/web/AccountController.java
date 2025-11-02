@@ -46,11 +46,11 @@ public class AccountController implements AccountOpenApi {
     @ResponseStatus(HttpStatus.CREATED)
     @Override
     public void registerAccount(@Valid @RequestBody ManageUserVM manageVMUser) {
-            if(!checkPasswordLength(manageVMUser.getSenha())){
-                throw new InvalidPasswordException();
-            }
-            User user = userService.registerUser(manageVMUser, manageVMUser.getSenha());
-            emailService.enviarEmailDeAtivacao(user);
+        if(!checkPasswordLength(manageVMUser.getSenha())){
+            throw new InvalidPasswordException();
+        }
+        User user = userService.registerUser(manageVMUser, manageVMUser.getSenha());
+        emailService.enviarEmailDeAtivacao(user);
 
     }
 

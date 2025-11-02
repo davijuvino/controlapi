@@ -361,25 +361,12 @@
                     </span>
             </h3>
             <p th:text="${details ?: 'Sua solicitação foi processada e está completa.'}">
-                A conta foi ativada no sistema e processados corretamente.
+                A conta foi ativada no sistema e processada corretamente.
             </p>
         </div>
 
         <div class="progress-container">
             <div class="progress-bar"></div>
-        </div>
-
-        <!-- Detalhes da operação (opcional) -->
-        <div class="success-details" th:if="${operationDetails}">
-            <h4><i class="fas fa-info-circle"></i> Detalhes da Operação</h4>
-            <div class="success-info">
-                <div class="success-item">
-                    <span class="success-label">Data/Hora:</span>
-                    <span class="success-value" th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}">
-                            Data e hora
-                        </span>
-                </div>
-            </div>
         </div>
 
         <!-- Próximos passos -->
