@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.ui.Model;
 
 @Tag(name = "Contas")
 public interface AccountOpenApi {
@@ -21,6 +22,6 @@ public interface AccountOpenApi {
             @ApiResponse(responseCode = "200", description = "Usuário ativado com sucesso"),
             @ApiResponse(responseCode = "500", description = "Erro interno ao ativar o usuário")
     })
-    void activateAccount(String key);
+    String activateAccount(String key , Model model);
 
 }
