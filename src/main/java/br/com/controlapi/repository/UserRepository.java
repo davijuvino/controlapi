@@ -17,6 +17,8 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
 	Optional<User> findOneByActivationKey(String activationKey);
 
+	Optional<User> findOneByResetKey(String resetKey);
+
 	Optional<User> findOneByLogin(String login);
 
 	Optional<User> findOneByEmailIgnoreCase(String email);
