@@ -3,7 +3,7 @@ package br.com.controlapi.web.openapi;
 import br.com.controlapi.model.dto.PasswordChangeDTO;
 import br.com.controlapi.model.dto.UserDTO;
 import br.com.controlapi.web.vm.KeyAndPasswordVM;
-import br.com.controlapi.web.vm.ManageUserVM;
+import br.com.controlapi.web.vm.ManagedUserVM;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,7 +19,7 @@ public interface AccountOpenApi {
             @ApiResponse(responseCode = "400", description = "Dados inválidos ou e-mail/login já em uso")
     })
     void registerAccount(
-            @RequestBody(description = "Representação de um novo usuário", required = true) ManageUserVM manageVMUser);
+            @RequestBody(description = "Representação de um novo usuário", required = true) ManagedUserVM manageVMUser);
 
     @Operation(summary = "Ativar um usuário", responses = {
             @ApiResponse(responseCode = "200", description = "Usuário ativado com sucesso"),

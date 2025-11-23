@@ -7,7 +7,7 @@ import br.com.controlapi.security.SecurityUtils;
 import br.com.controlapi.service.EmailService;
 import br.com.controlapi.web.openapi.AccountOpenApi;
 import br.com.controlapi.web.vm.KeyAndPasswordVM;
-import br.com.controlapi.web.vm.ManageUserVM;
+import br.com.controlapi.web.vm.ManagedUserVM;
 import br.com.controlapi.model.entity.User;
 import br.com.controlapi.repository.UserRepository;
 import br.com.controlapi.service.UserService;
@@ -52,7 +52,7 @@ public class AccountController implements AccountOpenApi {
     @PostMapping("/registrar")
     @ResponseStatus(HttpStatus.CREATED)
     @Override
-    public void registerAccount(@Valid @RequestBody ManageUserVM manageVMUser) {
+    public void registerAccount(@Valid @RequestBody ManagedUserVM manageVMUser) {
         if(!checkPasswordLength(manageVMUser.getSenha())){
             throw new InvalidPasswordException();
         }
@@ -186,8 +186,8 @@ public class AccountController implements AccountOpenApi {
     }
 
     private static boolean checkPasswordLength(String password) {
-        return StringUtils.hasText(password) &&
-                password.length() >= ManageUserVM.PASSWORD_MIN_LENGTH &&
-                password.length() <= ManageUserVM.PASSWORD_MAX_LENGTH;
+        return !StringUtils.hasText(password) &&
+                password.length() >= ManagedUserVM.PASSWORD_MIN_LENGTH &&
+                password.length() <= ManagedUserVM.PASSWORD_MAX_LENGTH;
     }
 }

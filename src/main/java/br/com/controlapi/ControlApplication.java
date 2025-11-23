@@ -50,7 +50,7 @@ public class ControlApplication {
 				hostAddress,
 				env.getProperty("server.port"),
 				env.getActiveProfiles());
-		
+
 	}
 
 }

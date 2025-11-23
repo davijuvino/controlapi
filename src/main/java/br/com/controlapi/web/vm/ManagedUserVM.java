@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ManageUserVM extends UserDTO {
+public class ManagedUserVM extends UserDTO {
 
     public static final int PASSWORD_MIN_LENGTH = 4;
 
@@ -20,7 +20,7 @@ public class ManageUserVM extends UserDTO {
 
     @Override
     public String toString() {
-        return "ManageUserVM{" +
+        return "ManagedUserVM{" +
                 "} " + super.toString();
     }
 
