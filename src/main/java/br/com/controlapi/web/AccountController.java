@@ -82,15 +82,15 @@ public class AccountController implements AccountOpenApi {
     }
 
     /**
-     * GET  /autenticar : Verifique se o usuário está autenticado e retorne suas credenciais de login.
+     * GET  /autenticado : Verifique se o usuário está autenticado e retorne suas credenciais de login.
      *
      * @param request the HTTP request
-     * @return the login if the user is authenticated
+     * @return o login se o usuario estiver autenticado
      */
-    @GetMapping("/autenticar")
+    @GetMapping("/autenticado")
     @Override
     public String isAuthenticated(HttpServletRequest request) {
-        log.debug("REST Verificando se o usuário atual está autenticado");
+        log.debug("REST requisicao para verificar se o usuario atual esta autenticado");
         return request.getRemoteUser();
     }
 
@@ -186,7 +186,7 @@ public class AccountController implements AccountOpenApi {
     }
 
     private static boolean checkPasswordLength(String password) {
-        return !StringUtils.hasText(password) &&
+        return StringUtils.hasText(password) &&
                 password.length() >= ManagedUserVM.PASSWORD_MIN_LENGTH &&
                 password.length() <= ManagedUserVM.PASSWORD_MAX_LENGTH;
     }

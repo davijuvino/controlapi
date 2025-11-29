@@ -102,9 +102,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/registrar").permitAll()
                         .requestMatchers("/api/ativar").permitAll()
-                        .requestMatchers("/api/authenticate").permitAll()
-                        .requestMatchers("/api/account/reset-password/init").permitAll()
-                        .requestMatchers("/api/account/reset-password/finish").permitAll()
+                        .requestMatchers("/api/autenticado").permitAll()
+                        .requestMatchers("/api/account/reset-password/inicia").permitAll()
+                        .requestMatchers("/api/account/reset-password/finaliza").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/management/health").permitAll()
                         .requestMatchers("/management/info").permitAll()
