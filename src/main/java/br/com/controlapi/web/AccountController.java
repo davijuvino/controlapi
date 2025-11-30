@@ -57,7 +57,7 @@ public class AccountController implements AccountOpenApi {
             throw new InvalidPasswordException();
         }
         User user = userService.registerUser(manageVMUser, manageVMUser.getSenha());
-        emailService.enviarEmailDeAtivacao(user);
+        emailService.sendActivationEmail(user);
 
     }
 

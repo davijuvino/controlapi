@@ -98,7 +98,7 @@ public class EmailService {
     }
 
     @Async("emailExecutor")
-    public void enviarEmailDeAtivacao(User user) {
+    public void sendActivationEmail(User user) {
         log.debug("Sending activation email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
     }
