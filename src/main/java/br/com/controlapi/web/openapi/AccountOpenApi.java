@@ -21,12 +21,6 @@ public interface AccountOpenApi {
     void registerAccount(
             @RequestBody(description = "Representação de um novo usuário", required = true) ManagedUserVM manageVMUser);
 
-    @Operation(summary = "Ativar um usuário", responses = {
-            @ApiResponse(responseCode = "200", description = "Usuário ativado com sucesso"),
-            @ApiResponse(responseCode = "500", description = "Erro interno ao ativar o usuário")
-    })
-    String activateAccount(String key , Model model);
-
     @Operation(summary = "Verificar se o usuário está autenticado", responses = {
             @ApiResponse(responseCode = "200", description = "Usuário autenticado"),
             @ApiResponse(responseCode = "401", description = "Usuário não autenticado")

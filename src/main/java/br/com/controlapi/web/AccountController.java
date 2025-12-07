@@ -16,14 +16,12 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/api")
 public class AccountController implements AccountOpenApi {
 
@@ -59,26 +57,6 @@ public class AccountController implements AccountOpenApi {
         User user = userService.registerUser(manageVMUser, manageVMUser.getSenha());
         emailService.sendActivationEmail(user);
 
-    }
-
-    /**
-     * GET   /Ativar : ativar do usuario.
-     *
-     * @param  key
-     * @throws RuntimeException 404 (Not found) Chave não encontrada para ativar a conta.
-     */
-    @GetMapping("/ativar")
-    @Override
-    public String activateAccount(@RequestParam(value = "chave") String key, Model model) {
-        Optional<User> user = userService.activateRegistration(key);
-
-        if (user.isEmpty()) {
-            model.addAttribute("message", "Chave não encontrada para ativar este usuário.");
-            return "error";
-        }
-
-        model.addAttribute("reference", "ACT-" + System.currentTimeMillis());
-        return "success";
     }
 
     /**
